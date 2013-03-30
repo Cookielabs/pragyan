@@ -1,0 +1,5 @@
+The process;
+1. get the input
+2. create a lexicon object. A lexicon object will have a predicatelist, literalList of one question.
+3. 
+ 
