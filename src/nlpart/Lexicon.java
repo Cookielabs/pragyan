@@ -12,13 +12,6 @@ import com.hp.hpl.jena.sparql.engine.http.QueryExceptionHTTP;
 import com.hp.hpl.jena.sparql.resultset.ResultSetRewindable;
 import com.hp.hpl.jena.sparql.resultset.SPARQLResult;
 
-/*
- * This class stores all the "Literals" and the "Predicates" that are found in the Question asked. 
- * 
- * There are two main functions in this Lexicon class
- * 1. getLiteral()
- * 2. getPredicate()
- * */
 public class Lexicon {
 
 	private List<LexiconPredicate> predicateList;
@@ -33,23 +26,23 @@ public class Lexicon {
 		literalFilled = false;
 	}
 
-	public List<LexiconPredicate> getPredicates(String question, int limit)
+	public List<LexiconPredicate> getPredicates(String question, int limit, int topN)
 			throws Exception {
 
+		/*
+		 * The following things are to be done in this function
+		 * 
+		 * 1. Get the permutations 2. Trim the permutations 3. Build the query
+		 * and execute it to get the predicates 4. Store the values of the
+		 * predicates in the appropriate vars ( URI, Label, QuestionMatch ) 5.
+		 */
+		List<LexiconPredicate> interPredicateList = new ArrayList<LexiconPredicate>();
 		List<String> permutationList = getPermutations(question);
 		permutationList = getPermutations(question);
 		for (String string : permutationList) {
 			System.out.println("=>" + string);
 		}
-		/*
-		 * This is where we need to add wordnet, because the permutation is just
-		 * the permutation of the words in the question. We need to have more
-		 * words to get the predicates properly! - We can use the JAWS library.
-		 * Java API for Wordnet :D pretty cool name, eh? :D
-		 */
 
-		// Now that we have constructed the permutations we need to work on the
-		// construction of the predicate queries. God damnit!
 		String bifContainsValue = "";
 		for (String permutation : permutationList) {
 
@@ -84,43 +77,53 @@ public class Lexicon {
 				ResultSet predicateResults = qe.execSelect();
 				while (predicateResults.hasNext()) {
 					QuerySolution qsolution = predicateResults.nextSolution();
-					//System.out.println(qsolution.toString());
-					
+					// System.out.println(qsolution.toString());
+
 					RDFNode predicateURI = qsolution.get("predicate");
 					RDFNode predicateLabel = qsolution.get("label");
 					LexiconPredicate tmplexiconpredicate = new LexiconPredicate();
 
-                    // check that the property is used .. not a non-used property 
-                    Boolean hasResuts = false;
-                    String checkQuery = "select distinct * where { ?x <" + predicateURI + "> ?y } limit 1 ";
-                    
-                    Query isItUsed = QueryFactory.create(checkQuery);
-                    QueryExecution isItUsedObj = QueryExecutionFactory.sparqlService(sparqlEndpoint, isItUsed);
-                    ResultSet isItUsedResult = isItUsedObj.execSelect();
-                    ResultSetRewindable resultset = ResultSetFactory.copyResults(isItUsedResult);
-                    
-                    System.out.println("Result Size: "+resultset.size());
-                    if (resultset.size() != 0)
-                    {
-                        hasResuts = true;
-                        System.out.println("true");
-                    }
-                    else
-                    	System.out.println("false");
+					// check that the property is used .. not a non-used
+					// property
+					Boolean hasResuts = false;
+					String checkQuery = "select distinct * where { ?x <"
+							+ predicateURI + "> ?y } limit 1 ";
 
-					
-					
+					Query isItUsed = QueryFactory.create(checkQuery);
+					QueryExecution isItUsedObj = QueryExecutionFactory
+							.sparqlService(sparqlEndpoint, isItUsed);
+					ResultSet isItUsedResult = isItUsedObj.execSelect();
+					ResultSetRewindable resultset = ResultSetFactory
+							.copyResults(isItUsedResult);
+					System.out.println(predicateURI.toString());
+					//System.out.println("Result Size: " + resultset.size());
+					if (resultset.size() != 0) {
+						hasResuts = true;
+						// System.out.println("true");
+						tmplexiconpredicate.URI = predicateURI.toString();
+						tmplexiconpredicate.label = predicateLabel.toString();
+						tmplexiconpredicate.QuestionMatch = permutation;
+						interPredicateList.add(tmplexiconpredicate);
+					} else {
+						 System.out.println("No result. URI not used");
+
+					}
+
 				}
 			} catch (Exception e) {
-				// TODO: handle exception
+
 			}
 		}
-		// TODO: Create a SimpleStemmer class and get the stems of the word and
-		// use it with
-		
+	System.out.println("outside");
+		for (LexiconPredicate lexiconPredicate : interPredicateList) {
+			System.out.println(lexiconPredicate.label);
+		}
+		predicateList = scorePredicates(interPredicateList, topN);
+        predicateList = addDomainAndRange(predicateList);
 		return this.predicateList;
 	}
-
+	
+	
 	public List<LexiconLiteral> getLiterals(String question, int limit)
 			throws Exception {
 
@@ -168,28 +171,35 @@ public class Lexicon {
 		return this.literalList;
 	}
 
+	public List<LexiconPredicate> scorePredicates(List<LexiconPredicate> results, int n){
+		// TODO: the raking algo and the quey part. Wasted time talking to rulz and suggu boy.
+		return results;
+	}
 	public List<String> getPermutations(String question) throws Exception {
 		System.out.println("Called get predicates");
 		Set<String> permutationList = new LinkedHashSet<>();
 
 		// Removing the unwanted words from the question
-		question = question.replaceAll("\\swho\\s", " ");
-		question = question.replaceAll("\\swhat\\s", " ");
-		question = question.replaceAll("\\show\\s", " ");
-		question = question.replaceAll("\\smany\\s", " ");
-		question = question.replaceAll("\\smuch\\s", " ");
+		question = question.replaceAll("\\s*who\\s*", " ");
+		question = question.replaceAll("\\s*what\\s*", " ");
+		question = question.replaceAll("\\s*how\\s*", " ");
+		question = question.replaceAll("\\s*many\\s*", " ");
+		question = question.replaceAll("\\s*much\\s*", " ");
 		question = question.replaceAll("\\s*would\\s*", " ");
-		question = question.replaceAll("\\scould\\s", " ");
-		question = question.replaceAll("\\scan\\s", " ");
-		question = question.replaceAll("\\splease\\s", " ");
-		question = question.replaceAll("\\stell\\s", " ");
-		question = question.replaceAll("\\sme\\s", " ");
-		question = question.replaceAll("\\sa\\s", " ");
-		question = question.replaceAll("\\sthe\\s", " ");
-		question = question.replaceAll("\\syou\\s", " ");
-		question = question.replaceAll("\\sis\\s", " ");
+		question = question.replaceAll("\\s*could\\s*", " ");
+		question = question.replaceAll("\\s*can\\s*", " ");
+		question = question.replaceAll("\\s*please\\s*", " ");
+		question = question.replaceAll("\\s*tell\\s*", " ");
+		question = question.replaceAll("\\s*me\\s*", " ");
+		question = question.replaceAll("\\s*a\\s*", " ");
+		question = question.replaceAll("\\s*the\\s*", " ");
+		question = question.replaceAll("\\s*you\\s*", " ");
+		question = question.replaceAll("\\s*is\\s*", " ");
+		question = question.replaceAll("\\s*give\\s*", " ");
+		question = question.replaceAll("\\s*all\\s*", " ");
+		question = question.replaceAll("\\s*of\\s*", " ");
 		question = question.replaceAll("  ", " "); // Replacing all 2 spaces
-													// with 1 space
+		// with 1 space
 		question = question.trim();
 
 		System.out.println(question);
