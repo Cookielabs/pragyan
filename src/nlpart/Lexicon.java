@@ -26,8 +26,7 @@ public class Lexicon {
 		literalFilled = false;
 	}
 
-	public List<LexiconPredicate> getPredicates(String question, int limit, int topN)
-			throws Exception {
+	public List<LexiconPredicate> getPredicates(String question, int limit, int topN) throws Exception {
 
 		/*
 		 * The following things are to be done in this function
@@ -63,15 +62,14 @@ public class Lexicon {
 					+ "\" } "
 					+ "union {"
 					+ "?predicate <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>  <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property>  ."
-					+ "?predicate <http://www.w3.org/2000/01/rdf-schema#label> ?label ."
-					+ "?label <bif:contains> \"" + bifContainsValue + "\" } " +
+					+ "?predicate <http://www.w3.org/2000/01/rdf-schema#label> ?label ." + "?label <bif:contains> \""
+					+ bifContainsValue + "\" } " +
 
 					"} limit " + limit;
 			System.out.println(queryString);
 			Query queryObj = QueryFactory.create(queryString);
 			String sparqlEndpoint = "http://dbpedia.org/sparql";
-			QueryExecution qe = QueryExecutionFactory.sparqlService(
-					sparqlEndpoint, queryObj);
+			QueryExecution qe = QueryExecutionFactory.sparqlService(sparqlEndpoint, queryObj);
 
 			try {
 				ResultSet predicateResults = qe.execSelect();
@@ -86,17 +84,14 @@ public class Lexicon {
 					// check that the property is used .. not a non-used
 					// property
 					Boolean hasResuts = false;
-					String checkQuery = "select distinct * where { ?x <"
-							+ predicateURI + "> ?y } limit 1 ";
+					String checkQuery = "select distinct * where { ?x <" + predicateURI + "> ?y } limit 1 ";
 
 					Query isItUsed = QueryFactory.create(checkQuery);
-					QueryExecution isItUsedObj = QueryExecutionFactory
-							.sparqlService(sparqlEndpoint, isItUsed);
+					QueryExecution isItUsedObj = QueryExecutionFactory.sparqlService(sparqlEndpoint, isItUsed);
 					ResultSet isItUsedResult = isItUsedObj.execSelect();
-					ResultSetRewindable resultset = ResultSetFactory
-							.copyResults(isItUsedResult);
+					ResultSetRewindable resultset = ResultSetFactory.copyResults(isItUsedResult);
 					System.out.println(predicateURI.toString());
-					//System.out.println("Result Size: " + resultset.size());
+					// System.out.println("Result Size: " + resultset.size());
 					if (resultset.size() != 0) {
 						hasResuts = true;
 						// System.out.println("true");
@@ -105,7 +100,7 @@ public class Lexicon {
 						tmplexiconpredicate.QuestionMatch = permutation;
 						interPredicateList.add(tmplexiconpredicate);
 					} else {
-						 System.out.println("No result. URI not used");
+						System.out.println("No result. URI not used");
 
 					}
 
@@ -114,18 +109,109 @@ public class Lexicon {
 
 			}
 		}
-	System.out.println("outside");
+		System.out.println("outside");
 		for (LexiconPredicate lexiconPredicate : interPredicateList) {
 			System.out.println(lexiconPredicate.label);
 		}
+		System.out.println("--------------------------------------------");
 		predicateList = scorePredicates(interPredicateList, topN);
-        predicateList = addDomainAndRange(predicateList);
+		// predicateList = addDomainAndRange(predicateList);
 		return this.predicateList;
 	}
-	
-	
-	public List<LexiconLiteral> getLiterals(String question, int limit)
-			throws Exception {
+
+	public List<LexiconPredicate> getLiterals(String question, int limit, int topN) throws Exception {
+
+		/*
+		 * The following things are to be done in this function
+		 * 
+		 * 1. Get the permutations 2. Trim the permutations 3. Build the query
+		 * and execute it to get the predicates 4. Store the values of the
+		 * predicates in the appropriate vars ( URI, Label, QuestionMatch ) 5.
+		 */
+		List<LexiconPredicate> interLiteralList = new ArrayList<LexiconPredicate>();
+		List<String> permutationList = getPermutations(question);
+		permutationList = getPermutations(question);
+		for (String string : permutationList) {
+			System.out.println("=>" + string);
+		}
+
+		String bifContainsValue = "";
+		for (String permutation : permutationList) {
+
+			bifContainsValue = "";
+			bifContainsValue += "\'" + permutation + "\'";
+
+			String queryString = "select distinct ?subject ?literal ?redirects ?typeOfOwner ?redirectsTypeOfOwner where{"
+					+ "?subject <http://www.w3.org/2000/01/rdf-schema#label> ?literal."
+					+ "optional { ?subject <http://dbpedia.org/ontology/wikiPageRedirects> ?redirects . "
+					+ "optional {?redirects <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?redirectsTypeOfOwner ."
+					+ "}}."
+					+ "optional {?subject <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?typeOfOwner}."
+					+ "Filter ( !bound(?typeOfOwner) || "
+					+ " ( !(?typeOfOwner = <http://www.w3.org/2004/02/skos/core#Concept>)"
+					+ " && !(?typeOfOwner = <http://www.w3.org/2002/07/owl#Thing>) "
+					+ " && !(?typeOfOwner = <http://www.opengis.net/gml/_Feature>) "
+					+ " && !(?typeOfOwner = <http://www.w3.org/2002/07/owl#ObjectProperty>) "
+					+ " && !(?typeOfOwner = <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> ) "
+					+ " && !(?typeOfOwner = <http://www.w3.org/2002/07/owl#DatatypeProperty> )))."
+					+ "?literal <bif:contains> '\"" + permutation + "\"'.} limit " + limit;
+			
+			System.out.println(queryString);
+			Query queryObj = QueryFactory.create(queryString);
+			String sparqlEndpoint = "http://dbpedia.org/sparql";
+			QueryExecution qe = QueryExecutionFactory.sparqlService(sparqlEndpoint, queryObj);
+
+			try {
+				ResultSet literalResults = qe.execSelect();
+				while (literalResults.hasNext()) {
+					QuerySolution qsolution = literalResults.nextSolution();
+					// System.out.println(qsolution.toString());
+
+					RDFNode literalURI = qsolution.get("predicate");
+					RDFNode literalLabel = qsolution.get("label");
+					LexiconLiteral tmplexiconliteral = new LexiconLiteral();
+
+					// check that the property is used .. not a non-used
+					// property
+					Boolean hasResuts = false;
+				/*	String checkQuery = "select distinct * where { ?x <" + literalURI + "> ?y } limit 1 ";
+
+					Query isItUsed = QueryFactory.create(checkQuery);
+					QueryExecution isItUsedObj = QueryExecutionFactory.sparqlService(sparqlEndpoint, isItUsed);
+					ResultSet isItUsedResult = isItUsedObj.execSelect();
+					ResultSetRewindable resultset = ResultSetFactory.copyResults(isItUsedResult);
+					System.out.println(predicateURI.toString());
+					// System.out.println("Result Size: " + resultset.size());
+					if (resultset.size() != 0) {
+						hasResuts = true;
+						// System.out.println("true");
+						tmplexiconpredicate.URI = predicateURI.toString();
+						tmplexiconpredicate.label = predicateLabel.toString();
+						tmplexiconpredicate.QuestionMatch = permutation;
+						interPredicateList.add(tmplexiconpredicate);
+					} else {
+						System.out.println("No result. URI not used");
+
+					}
+
+				}
+			} catch (Exception e) {
+
+			}
+		}
+		System.out.println("outside");
+		for (LexiconPredicate lexiconPredicate : interPredicateList) {
+			System.out.println(lexiconPredicate.label);
+		}
+		System.out.println("--------------------------------------------");
+		predicateList = scorePredicates(interPredicateList, topN);
+		// predicateList = addDomainAndRange(predicateList);
+		return this.predicateList;
+		
+		Reaaaaaaaaaaaaaaly sleeepy.
+		*/
+	}
+	public List<LexiconLiteral> getLiterals(String question, int limit) throws Exception {
 
 		List<String> permutationList = getPermutations(question);
 		permutationList = getPermutations(question);
@@ -148,15 +234,12 @@ public class Lexicon {
 					+ " && !(?typeOfOwner = <http://www.w3.org/2002/07/owl#ObjectProperty>) "
 					+ " && !(?typeOfOwner = <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> ) "
 					+ " && !(?typeOfOwner = <http://www.w3.org/2002/07/owl#DatatypeProperty> )))."
-					+ "?literal <bif:contains> '\""
-					+ permutation
-					+ "\"'.} limit " + limit;
+					+ "?literal <bif:contains> '\"" + permutation + "\"'.} limit " + limit;
 
 			System.out.println(queryString);
 			Query queryObj = QueryFactory.create(queryString);
 			String sparqlEndpoint = "http://dbpedia.org/sparql";
-			QueryExecution qe = QueryExecutionFactory.sparqlService(
-					sparqlEndpoint, queryObj);
+			QueryExecution qe = QueryExecutionFactory.sparqlService(sparqlEndpoint, queryObj);
 
 			try {
 				ResultSet literalResults = qe.execSelect();
@@ -171,10 +254,43 @@ public class Lexicon {
 		return this.literalList;
 	}
 
-	public List<LexiconPredicate> scorePredicates(List<LexiconPredicate> results, int n){
-		// TODO: the raking algo and the quey part. Wasted time talking to rulz and suggu boy.
+	public List<LexiconPredicate> scorePredicates(List<LexiconPredicate> results, int n) {
+		// TODO: the raking algo and the query part. Wasted time talking to rulz
+		// and suggu boy.
+
+		for (LexiconPredicate predicate : results) {
+			// adding a levenshtein score to each one of them where predicates
+			// of high score will make a bad match
+			// removing the @en in the end of each label
+			// removing the terms between brackets like the dark knight (the
+			// film)
+			String tmplabel;
+
+			// use match instead regex
+			if (predicate.label.endsWith("@en") || predicate.label.matches("\\(.*\\)")) {
+				tmplabel = predicate.label.substring(0, predicate.label.length() - 3);
+				if (predicate.label.matches("\\(.*\\)")) {
+					tmplabel = tmplabel.replace("\\(.*\\)", " ");
+					tmplabel = tmplabel.replace("  ", " ");
+					tmplabel = tmplabel.trim();
+				}
+
+			} else {
+				tmplabel = predicate.label;
+			}
+			System.out.println(tmplabel);
+			predicate.score = Util.calculateLevenshteinDistance(predicate.QuestionMatch, tmplabel);
+			System.out.println("Levenshtein Score: " + predicate.score);
+			/*
+			 * Now that we have got the scores of the predicates, we can sort them in ascending order.
+			 * The one with the least score is the winner. 
+			 * I'm going to write the sorting method tomorrow. Too sleepy now.
+			 * I'm writing off the same thing for getLiterals
+			 * */
+		}
 		return results;
 	}
+
 	public List<String> getPermutations(String question) throws Exception {
 		System.out.println("Called get predicates");
 		Set<String> permutationList = new LinkedHashSet<>();
