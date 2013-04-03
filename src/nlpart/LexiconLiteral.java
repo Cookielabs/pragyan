@@ -2,8 +2,7 @@ package nlpart;
 import java.util.*;
 
 public class LexiconLiteral {
-	public List<String> typeOfOwner;
-    public String predicate;
+	public String typeOfOwner;
     public List<String> domains;
     public List<String> ranges;
     public String type;
@@ -15,6 +14,6 @@ public class LexiconLiteral {
     
     public LexiconLiteral(){
     	
-    	typeOfOwner = new ArrayList<String>();
+    	//typeOfOwner = new ArrayList<String>();
     }
 }
