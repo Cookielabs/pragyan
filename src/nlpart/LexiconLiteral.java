@@ -2,7 +2,7 @@ package nlpart;
 import java.util.*;
 
 public class LexiconLiteral {
-	public String typeOfOwner;
+	public List<String> typeOfOwner;
     public List<String> domains;
     public List<String> ranges;
     public String type;
@@ -15,5 +15,21 @@ public class LexiconLiteral {
     public LexiconLiteral(){
     	
     	//typeOfOwner = new ArrayList<String>();
+    }
+    public LexiconLiteral(String URI, String label, String QuestionMatch, List<String> typeOfOwnerList)
+    {
+        this.URI = URI;
+        this.label = label;
+        this.QuestionMatch = QuestionMatch;
+        this.typeOfOwner = typeOfOwnerList;
+    }
+    public LexiconLiteral(String URI, String label, String QuestionMatch, String typeOfOwner)
+    {
+        this.URI = URI;
+        this.label = label;
+        this.QuestionMatch = QuestionMatch;
+        List<String> typeOfOwnerList = new ArrayList<String>();
+        typeOfOwnerList.add(typeOfOwner);
+        this.typeOfOwner = typeOfOwnerList;
     }
 }

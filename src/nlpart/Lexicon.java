@@ -38,9 +38,13 @@ public class Lexicon
 		 * and execute it to get the predicates 4. Store the values of the
 		 * predicates in the appropriate vars ( URI, Label, QuestionMatch ) 5.
 		 */
+		
+		//The time the query has started
+		long startTime = System.currentTimeMillis();
+		
 		List<LexiconPredicate> interPredicateList = new ArrayList<LexiconPredicate>();
 		List<String> permutationList = getPermutations(question);
-		permutationList = getPermutations(question);
+		// permutationList = getPermutations(question);
 		for (String string : permutationList)
 		{
 			System.out.println("=>" + string);
@@ -72,12 +76,12 @@ public class Lexicon
 
 					"} limit " + limit;
 			System.out.println(queryString);
-			Query queryObj = QueryFactory.create(queryString);
-			String sparqlEndpoint = "http://dbpedia.org/sparql";
-			QueryExecution qe = QueryExecutionFactory.sparqlService(sparqlEndpoint, queryObj);
 
 			try
 			{
+				Query queryObj = QueryFactory.create(queryString);
+				String sparqlEndpoint = "http://dbpedia.org/sparql";
+				QueryExecution qe = QueryExecutionFactory.sparqlService(sparqlEndpoint, queryObj);
 				ResultSet predicateResults = qe.execSelect();
 				while (predicateResults.hasNext())
 				{
@@ -88,8 +92,9 @@ public class Lexicon
 					RDFNode predicateLabel = qsolution.get("label");
 					LexiconPredicate tmplexiconpredicate = new LexiconPredicate();
 
-					// check that the property is used .. not a non-used
-					// property
+					// Checking if the property is a used property and not a non
+					// used property. If it has entries,it is used ,else non
+					// used
 					Boolean hasResuts = false;
 					String checkQuery = "select distinct * where { ?x <" + predicateURI + "> ?y } limit 1 ";
 
@@ -102,18 +107,29 @@ public class Lexicon
 					if ( resultset.size() != 0 )
 					{
 						hasResuts = true;
-						// System.out.println("true");
-						tmplexiconpredicate.URI = predicateURI.toString();
-						tmplexiconpredicate.label = predicateLabel.toString();
-						tmplexiconpredicate.QuestionMatch = permutation;
-						interPredicateList.add(tmplexiconpredicate);
 					}
 					else
 					{
 						System.out.println("No result. URI not used");
 
 					}
-
+					Boolean exists = false;
+					for (LexiconPredicate x : interPredicateList)
+					{
+						if ( x.URI == predicateURI.toString() && x.QuestionMatch == permutation )
+						{
+							exists = true;
+							break;
+						}
+					}
+					// adding the new predicate to the interPredicatelist
+					if ( !exists && hasResuts )
+					{
+						tmplexiconpredicate.URI = predicateURI.toString();
+						tmplexiconpredicate.QuestionMatch = permutation;
+						tmplexiconpredicate.label = predicateLabel.toString();
+						interPredicateList.add(tmplexiconpredicate);
+					}
 				}
 			}
 			catch (Exception e)
@@ -128,12 +144,17 @@ public class Lexicon
 		}
 		System.out.println("--------------------------------------------");
 		predicateList = scorePredicates(interPredicateList, topN);
+		long endTime = System.currentTimeMillis();
+		
+		System.out.println("The total time taken to get predicates is : " + (endTime - startTime )/1000+ " seconds");
 		// predicateList = addDomainAndRange(predicateList);
 		return this.predicateList;
 	}
 
 	public List<LexiconLiteral> getLiterals(String question, int limit, int topN) throws Exception {
 
+		long startTime = System.currentTimeMillis();
+		
 		List<LexiconLiteral> interLiteralList = new ArrayList<LexiconLiteral>();
 		List<String> permutationList = new ArrayList<String>();
 		permutationList = getPermutations(question);
@@ -161,7 +182,7 @@ public class Lexicon
 					+ " && !(?typeOfOwner = <http://www.w3.org/2002/07/owl#ObjectProperty>) "
 					+ " && !(?typeOfOwner = <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> ) "
 					+ " && !(?typeOfOwner = <http://www.w3.org/2002/07/owl#DatatypeProperty> )))."
-					+ "?literal <bif:contains> '\"" + permutation + "\"'. } limit " + limit ;
+					+ "?literal <bif:contains> '\"" + permutation + "\"'. } limit " + limit;
 
 			System.out.println(queryString);
 			Query queryObj = QueryFactory.create(queryString);
@@ -173,26 +194,85 @@ public class Lexicon
 				while (literalResults.hasNext())
 				{
 					QuerySolution qsolution = literalResults.nextSolution();
-					RDFNode literalURI = qsolution.get("subject");
+					RDFNode literalURI;
 					RDFNode literalLabel = qsolution.get("literal");
-					RDFNode literalTypeOfOwner = qsolution.get("typeOfOwner");
+					String resultTypeOfOwner = "" ;
 					LexiconLiteral tmplexiconLiteral = new LexiconLiteral();
+					
+					
+					if (qsolution.get("redirects") != null)
+                    {
+                        literalURI = qsolution.get("redirects");
+                        if (qsolution.get("redirectsTypeOfOwner") != null)
+                        {
+                            resultTypeOfOwner = qsolution.get("redirectsTypeOfOwner").toString();
+                        }
+                    }
+                    else
+                    {
+                        literalURI = qsolution.get("subject");
+                        if (qsolution.get("typeOfOwner") != null)
+                        {
+                            resultTypeOfOwner = qsolution.get("typeOfOwner").toString();
+                        }
 
-					tmplexiconLiteral.URI = literalURI.toString();
-					tmplexiconLiteral.label = literalLabel.toString();
-					tmplexiconLiteral.QuestionMatch = permutation;
-					tmplexiconLiteral.typeOfOwner = literalTypeOfOwner.toString();
-					interLiteralList.add(tmplexiconLiteral);
+                    }
+					
+					/*This literal shit is pretty complex. One resource can be of various types ( typeOfOwner ). So like predicate, we can't store the store the 
+					 * typeOfOwner in a string. So i'm storing that in a list. 
+					 * */
+					//TODO: cleaning up work of code. 
+					Boolean exists = false;          // URI + Label only Exists
+					Boolean exactThingExists = false;   // URI + Label + TypeofOwner exists in the literal list 
+					
+					for (LexiconLiteral x : interLiteralList)
+                    {
+                        if (x.URI == literalURI.toString() && x.label == literalLabel.toString() && x.QuestionMatch == permutation)
+                        {
+                            exists = true;
+                            if (Arrays.asList(x.typeOfOwner).contains(resultTypeOfOwner) && resultTypeOfOwner.length() > 0)
+                            {
+                                exactThingExists = true;
+                                break;
+                            }
+
+                        }
+                    }
+
+                    // adding the new literals to the literallist.
+                    if (!exists)
+                    {
+                    	LexiconLiteral tmpLexiconLiteral = new LexiconLiteral(literalURI.toString(), literalLabel.toString(), permutation, resultTypeOfOwner);
+                        interLiteralList.add(tmpLexiconLiteral);
+                    	
+                    }
+
+                    if (!exactThingExists && exists)
+                    {
+                    	for (LexiconLiteral lexlit : interLiteralList)
+                        {
+                            if (lexlit.URI == literalURI.toString() && lexlit.label == literalLabel.toString())
+                            {
+                                lexlit.typeOfOwner.add(resultTypeOfOwner);
+                            }
+                        }
+                   
+                    }
+                     
 				}
 			}
 			catch (Exception e)
 			{
 				System.out.println("Exception caught: " + e.toString());
 			}
+			
 
 		}
+		
 		literalList = scoreLiterals(interLiteralList, topN);
-
+		literalFilled = true;
+		long endTime = System.currentTimeMillis();
+		System.out.println("The total time taken to get predicates is : " + (endTime - startTime )/1000+ " seconds");
 		return literalList;
 	}
 
@@ -225,9 +305,9 @@ public class Lexicon
 			{
 				tmplabel = predicate.label;
 			}
-			System.out.println(tmplabel);
+			System.out.print(tmplabel);
 			predicate.score = Util.calculateLevenshteinDistance(predicate.QuestionMatch, tmplabel);
-			System.out.println("Levenshtein Score: " + predicate.score);
+			System.out.println(" => Levenshtein Score: " + predicate.score);
 			/*
 			 * Now that we have got the scores of the predicates, we can sort
 			 * them in ascending order. The one with the least score is the
@@ -251,8 +331,8 @@ public class Lexicon
 			// film)
 			String tmplabel;
 
-			// use match instead regex
-			if ( literal.label.endsWith("@en") || literal.label.matches("\\(.*\\)") )
+			// used matches instead of endwith. Now all the language tags are removes, not just english. 
+			if ( literal.label.matches(".*@.*") || literal.label.matches("\\(.*\\)") )
 			{
 				tmplabel = literal.label.substring(0, literal.label.length() - 3);
 				if ( literal.label.matches("\\(.*\\)") )

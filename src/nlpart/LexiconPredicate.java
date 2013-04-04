@@ -25,7 +25,7 @@ public class LexiconPredicate {
     public String URI;
     public String label;
     public String QuestionMatch ;
-    public String identifier ;
+    //public String identifier ;
     public int score ;
     
     public LexiconPredicate(){
