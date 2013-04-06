@@ -7,7 +7,7 @@ public class Nlpart {
 
 	public static void main(String args[]) throws Exception{
 		Util.writeToLog(Level.INFO, "Starting...");
-		String inputQuestion = "What is the religion of Tim Berners Lee";
+		String inputQuestion = "Religion of abdul kalam";
 		Util.writeToLog(Level.INFO, "The question is: "+inputQuestion);
 		answerGenerator answerGenerator = new answerGenerator();
 		
