@@ -38,10 +38,10 @@ public class Lexicon
 		 * and execute it to get the predicates 4. Store the values of the
 		 * predicates in the appropriate vars ( URI, Label, QuestionMatch ) 5.
 		 */
-		
-		//The time the query has started
+
+		// The time the query has started
 		long startTime = System.currentTimeMillis();
-		
+
 		List<LexiconPredicate> interPredicateList = new ArrayList<LexiconPredicate>();
 		List<String> permutationList = getPermutations(question);
 		// permutationList = getPermutations(question);
@@ -138,23 +138,33 @@ public class Lexicon
 			}
 		}
 		System.out.println("outside");
-		for (LexiconPredicate lexiconPredicate : interPredicateList)
-		{
-			System.out.println(lexiconPredicate.label);
-		}
+		
 		System.out.println("--------------------------------------------");
 		predicateList = scorePredicates(interPredicateList, topN);
 		long endTime = System.currentTimeMillis();
-		
-		System.out.println("The total time taken to get predicates is : " + (endTime - startTime )/1000+ " seconds");
+
+		System.out.println("The total time taken to get predicates is : " + (endTime - startTime) / 1000 + " seconds");
 		// predicateList = addDomainAndRange(predicateList);
+		Collections.sort(predicateList);
+		for (LexiconPredicate lexiconPredicate : predicateList)
+		{
+			System.out.print(lexiconPredicate.label);
+			System.out.println(" => Levenshtein Score: " + lexiconPredicate.score);
+		}
+		
+		
 		return this.predicateList;
 	}
 
 	public List<LexiconLiteral> getLiterals(String question, int limit, int topN) throws Exception {
-
+/*
+ * IMPORTANT
+ * TODO: Need to remove the duplicates. All the methods that I've tried have acting weird. Need a proper method to remove the duplicates. 
+ * Have to override the equals and hashCode methods and remove the duplicates by comparing the objects
+ *   
+ * */
 		long startTime = System.currentTimeMillis();
-		
+
 		List<LexiconLiteral> interLiteralList = new ArrayList<LexiconLiteral>();
 		List<String> permutationList = new ArrayList<String>();
 		permutationList = getPermutations(question);
@@ -163,117 +173,154 @@ public class Lexicon
 		{
 			System.out.println("=> " + permutations);
 		}
-		String bifContainsValue = "";
-		for (String permutation : permutationList)
+		if ( literalFilled )
 		{
-			bifContainsValue = "";
-			bifContainsValue += "\'" + permutation + "\'";
-
-			String queryString = "select distinct ?subject ?literal ?redirects ?typeOfOwner ?redirectsTypeOfOwner where{"
-					+ "?subject <http://www.w3.org/2000/01/rdf-schema#label> ?literal."
-					+ "optional { ?subject <http://dbpedia.org/ontology/wikiPageRedirects> ?redirects . "
-					+ "optional {?redirects <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?redirectsTypeOfOwner ."
-					+ "}}."
-					+ "optional {?subject <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?typeOfOwner}."
-					+ "Filter ( !bound(?typeOfOwner) || "
-					+ " ( !(?typeOfOwner = <http://www.w3.org/2004/02/skos/core#Concept>)"
-					+ " && !(?typeOfOwner = <http://www.w3.org/2002/07/owl#Thing>) "
-					+ " && !(?typeOfOwner = <http://www.opengis.net/gml/_Feature>) "
-					+ " && !(?typeOfOwner = <http://www.w3.org/2002/07/owl#ObjectProperty>) "
-					+ " && !(?typeOfOwner = <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> ) "
-					+ " && !(?typeOfOwner = <http://www.w3.org/2002/07/owl#DatatypeProperty> )))."
-					+ "?literal <bif:contains> '\"" + permutation + "\"'. } limit " + limit;
-
-			System.out.println(queryString);
-			Query queryObj = QueryFactory.create(queryString);
-			String sparqlEndpoint = "http://dbpedia.org/sparql";
-			QueryExecution qe = QueryExecutionFactory.sparqlService(sparqlEndpoint, queryObj);
-			try
+			for (LexiconLiteral literal : this.literalList)
 			{
-				ResultSet literalResults = qe.execSelect();
-				while (literalResults.hasNext())
+				if ( Arrays.asList(permutationList).contains(literal.QuestionMatch) )
 				{
-					QuerySolution qsolution = literalResults.nextSolution();
-					RDFNode literalURI;
-					RDFNode literalLabel = qsolution.get("literal");
-					String resultTypeOfOwner = "" ;
-					LexiconLiteral tmplexiconLiteral = new LexiconLiteral();
-					
-					
-					if (qsolution.get("redirects") != null)
-                    {
-                        literalURI = qsolution.get("redirects");
-                        if (qsolution.get("redirectsTypeOfOwner") != null)
-                        {
-                            resultTypeOfOwner = qsolution.get("redirectsTypeOfOwner").toString();
-                        }
-                    }
-                    else
-                    {
-                        literalURI = qsolution.get("subject");
-                        if (qsolution.get("typeOfOwner") != null)
-                        {
-                            resultTypeOfOwner = qsolution.get("typeOfOwner").toString();
-                        }
-
-                    }
-					
-					/*This literal shit is pretty complex. One resource can be of various types ( typeOfOwner ). So like predicate, we can't store the store the 
-					 * typeOfOwner in a string. So i'm storing that in a list. 
-					 * */
-					//TODO: cleaning up work of code. 
-					Boolean exists = false;          // URI + Label only Exists
-					Boolean exactThingExists = false;   // URI + Label + TypeofOwner exists in the literal list 
-					
-					for (LexiconLiteral x : interLiteralList)
-                    {
-                        if (x.URI == literalURI.toString() && x.label == literalLabel.toString() && x.QuestionMatch == permutation)
-                        {
-                            exists = true;
-                            if (Arrays.asList(x.typeOfOwner).contains(resultTypeOfOwner) && resultTypeOfOwner.length() > 0)
-                            {
-                                exactThingExists = true;
-                                break;
-                            }
-
-                        }
-                    }
-
-                    // adding the new literals to the literallist.
-                    if (!exists)
-                    {
-                    	LexiconLiteral tmpLexiconLiteral = new LexiconLiteral(literalURI.toString(), literalLabel.toString(), permutation, resultTypeOfOwner);
-                        interLiteralList.add(tmpLexiconLiteral);
-                    	
-                    }
-
-                    if (!exactThingExists && exists)
-                    {
-                    	for (LexiconLiteral lexlit : interLiteralList)
-                        {
-                            if (lexlit.URI == literalURI.toString() && lexlit.label == literalLabel.toString())
-                            {
-                                lexlit.typeOfOwner.add(resultTypeOfOwner);
-                            }
-                        }
-                   
-                    }
-                     
+					interLiteralList.add(literal);
 				}
 			}
-			catch (Exception e)
-			{
-				System.out.println("Exception caught: " + e.toString());
-			}
-			
 
+			return interLiteralList;
 		}
-		
-		literalList = scoreLiterals(interLiteralList, topN);
-		literalFilled = true;
-		long endTime = System.currentTimeMillis();
-		System.out.println("The total time taken to get predicates is : " + (endTime - startTime )/1000+ " seconds");
-		return literalList;
+		else
+		{
+			String bifContainsValue = "";
+			for (String permutation : permutationList)
+			{
+				bifContainsValue = "";
+				bifContainsValue += "\'" + permutation + "\'";
+
+				String queryString = "select distinct ?subject ?literal ?redirects ?typeOfOwner ?redirectsTypeOfOwner where{"
+						+ "?subject <http://www.w3.org/2000/01/rdf-schema#label> ?literal."
+						+ "optional { ?subject <http://dbpedia.org/ontology/wikiPageRedirects> ?redirects . "
+						+ "optional {?redirects <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?redirectsTypeOfOwner ."
+						+ "}}."
+						+ "optional {?subject <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?typeOfOwner}."
+						+ "Filter ( !bound(?typeOfOwner) || "
+						+ " ( !(?typeOfOwner = <http://www.w3.org/2004/02/skos/core#Concept>)"
+						+ " && !(?typeOfOwner = <http://www.w3.org/2002/07/owl#Thing>) "
+						+ " && !(?typeOfOwner = <http://www.opengis.net/gml/_Feature>) "
+						+ " && !(?typeOfOwner = <http://www.w3.org/2002/07/owl#ObjectProperty>) "
+						+ " && !(?typeOfOwner = <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> ) "
+						+ " && !(?typeOfOwner = <http://www.w3.org/2002/07/owl#DatatypeProperty> )))."
+						+ "?literal <bif:contains> '\"" + permutation + "\"'. } limit " + limit;
+
+				System.out.println(queryString);
+				Query queryObj = QueryFactory.create(queryString);
+				String sparqlEndpoint = "http://dbpedia.org/sparql";
+				QueryExecution qe = QueryExecutionFactory.sparqlService(sparqlEndpoint, queryObj);
+				try
+				{
+					ResultSet literalResults = qe.execSelect();
+					while (literalResults.hasNext())
+					{
+						QuerySolution qsolution = literalResults.nextSolution();
+						RDFNode literalURI;
+						RDFNode literalLabel = qsolution.get("literal");
+						String resultTypeOfOwner = "";
+						String resultQuestionMatch = permutation;
+						LexiconLiteral tmplexiconLiteral = new LexiconLiteral();
+
+						if ( qsolution.get("redirects") != null )
+						{
+							literalURI = qsolution.get("redirects");
+							if ( qsolution.get("redirectsTypeOfOwner") != null )
+							{
+								resultTypeOfOwner = qsolution.get("redirectsTypeOfOwner").toString();
+							}
+						}
+						else
+						{
+							literalURI = qsolution.get("subject");
+							if ( qsolution.get("typeOfOwner") != null )
+							{
+								resultTypeOfOwner = qsolution.get("typeOfOwner").toString();
+							}
+
+						}
+						System.out.println("Current Values:literalURI => " + literalURI.toString()
+								+ "\nliteralLabel => " + literalLabel.toString() + "\nQuestionmatch => "
+								+ resultQuestionMatch + "\nType of owner =>" + resultTypeOfOwner + "\n");
+						/*
+						 * This literal shit is pretty complex. One resource can
+						 * be of various types ( typeOfOwner ). So like
+						 * predicate, we can't store the store the typeOfOwner
+						 * in a string. So i'm storing that in a list.
+						 */
+						// TODO: cleaning up work of code.
+						Boolean exists = false; // URI + Label only Exists
+						Boolean exactThingExists = false; // URI + Label +
+														  // TypeofOwner exists
+														  // in
+														  // the literal list
+
+						for (LexiconLiteral x : interLiteralList)
+						{
+							if ( x.URI == literalURI.toString() && x.label == literalLabel.toString()
+									&& x.QuestionMatch == resultQuestionMatch )
+							{
+								exists = true;
+								if ( Arrays.asList(x.typeOfOwner).contains(resultTypeOfOwner)
+										&& resultTypeOfOwner.length() > 0 )
+								{
+									exactThingExists = true;
+									break;
+								}
+							}
+						}
+
+						// adding the new literals to the literallist.
+						if ( exists )
+						{
+							System.out.println("exists");
+							if ( exists && exactThingExists )
+							{
+								System.out.println("Exact thing exists\n\n");
+							}
+						}
+						else
+						{
+							System.out.println("Doesn't exists\n\n");
+						}
+						if ( !exists )
+						{
+							LexiconLiteral tmpLexiconLiteral = new LexiconLiteral(literalURI.toString(),
+									literalLabel.toString(), resultQuestionMatch, resultTypeOfOwner);
+							interLiteralList.add(tmpLexiconLiteral);
+
+						}
+
+						if ( !exactThingExists && exists )
+						{
+							for (LexiconLiteral lexlit : interLiteralList)
+							{
+								if ( lexlit.URI == literalURI.toString() && lexlit.label == literalLabel.toString() )
+								{
+									lexlit.typeOfOwner.add(resultTypeOfOwner);
+								}
+							}
+
+						}
+
+					}
+				}
+				catch (Exception e)
+				{
+					System.out.println("Exception caught: " + e.toString());
+				}
+
+			}
+
+			literalList = scoreLiterals(interLiteralList, topN);
+			literalFilled = true;
+			long endTime = System.currentTimeMillis();
+			System.out.println("The total time taken to get predicates is : " + (endTime - startTime) / 1000
+					+ " seconds");
+			return literalList;
+		}
 	}
 
 	public List<LexiconPredicate> scorePredicates(List<LexiconPredicate> results, int n) {
@@ -305,9 +352,9 @@ public class Lexicon
 			{
 				tmplabel = predicate.label;
 			}
-			System.out.print(tmplabel);
+			
 			predicate.score = Util.calculateLevenshteinDistance(predicate.QuestionMatch, tmplabel);
-			System.out.println(" => Levenshtein Score: " + predicate.score);
+			
 			/*
 			 * Now that we have got the scores of the predicates, we can sort
 			 * them in ascending order. The one with the least score is the
@@ -316,12 +363,12 @@ public class Lexicon
 			 */
 		}
 		return results;
+
 	}
 
 	public List<LexiconLiteral> scoreLiterals(List<LexiconLiteral> results, int n) {
-		// TODO: the raking algo and the query part. Wasted time talking to rulz
-		// and suggu boy.
-
+		
+		System.out.println("Inside SCore literal");
 		for (LexiconLiteral literal : results)
 		{
 			// adding a levenshtein score to each one of them where predicates
@@ -331,7 +378,8 @@ public class Lexicon
 			// film)
 			String tmplabel;
 
-			// used matches instead of endwith. Now all the language tags are removes, not just english. 
+			// used matches instead of endwith. Now all the language tags are
+			// removes, not just english.
 			if ( literal.label.matches(".*@.*") || literal.label.matches("\\(.*\\)") )
 			{
 				tmplabel = literal.label.substring(0, literal.label.length() - 3);
@@ -347,9 +395,9 @@ public class Lexicon
 			{
 				tmplabel = literal.label;
 			}
-			System.out.println(tmplabel);
+			// System.out.println(tmplabel);
 			literal.score = Util.calculateLevenshteinDistance(literal.QuestionMatch, tmplabel);
-			System.out.println("Levenshtein Score: " + literal.score);
+			// System.out.println("Levenshtein Score: " + literal.score);
 			/*
 			 * Now that we have got the scores of the predicates, we can sort
 			 * them in ascending order. The one with the least score is the
@@ -357,7 +405,49 @@ public class Lexicon
 			 * sleepy now. I'm writing off the same thing for getLiterals
 			 */
 		}
-		return results;
+		// removing duplicates that have the same resource
+		/*
+		 * TODO: this is a MAJOR to-do. Need to override the equals and hashCode
+		 * functions top remove the deplicates. I'm postponing it because I want
+		 * to complete the query generation part! But this is very important!
+		 */
+
+		HashSet<LexiconLiteral> dupRemovedResults = new LinkedHashSet<LexiconLiteral>();
+		for (LexiconLiteral literal : results)
+		{
+			for (LexiconLiteral literal2 : results)
+			{
+				// if the URI exists before
+				if ( literal.equals(literal2) )
+				{
+					dupRemovedResults.add(literal);
+					System.out.println("The two objects are the same");
+				}
+				if ( literal.URI == literal2.URI && !literal.equals(literal2) )
+				{
+					// removing the one of the larger distance
+					dupRemovedResults.add((literal.score <= literal2.score) ? literal : literal2);
+					System.out.println("The two objects are NOT the same");
+				}
+			}
+		}
+		System.out.println("Removed duplicates:");
+		/*for (LexiconLiteral lexiconLiteral : dupRemovedResults)
+		{
+			System.out.println("Literal Label:" + lexiconLiteral.label + "\n Score: " + lexiconLiteral.score
+					+ "\n Literal URI: " + lexiconLiteral.URI + "\n Literal questionMatch"
+					+ lexiconLiteral.QuestionMatch);
+		}*/
+		List<LexiconLiteral> resultToSend = new ArrayList<LexiconLiteral>();
+		resultToSend.addAll(dupRemovedResults);
+		Collections.sort(resultToSend);
+		for (LexiconLiteral lexiconLiteral : resultToSend)
+		{
+			System.out.println("Literal Label:" + lexiconLiteral.label + "\n Score: " + lexiconLiteral.score
+					+ "\n Literal URI: " + lexiconLiteral.URI + "\n Literal questionMatch"
+					+ lexiconLiteral.QuestionMatch);
+		}
+		return resultToSend;
 	}
 
 	public List<String> getPermutations(String question) throws Exception {
@@ -368,21 +458,21 @@ public class Lexicon
 		question = question.replaceAll("\\s*who\\s*", " ");
 		question = question.replaceAll("\\s*what\\s*", " ");
 		question = question.replaceAll("\\s*how\\s*", " ");
-		question = question.replaceAll("\\s*many\\s*", " ");
-		question = question.replaceAll("\\s*much\\s*", " ");
+		question = question.replaceAll("\\smany\\s", " ");
+		question = question.replaceAll("\\smuch\\s", " ");
 		question = question.replaceAll("\\s*would\\s*", " ");
 		question = question.replaceAll("\\s*could\\s*", " ");
 		question = question.replaceAll("\\s*can\\s*", " ");
 		question = question.replaceAll("\\s*please\\s*", " ");
 		question = question.replaceAll("\\s*tell\\s*", " ");
-		question = question.replaceAll("\\s*me\\s*", " ");
-		question = question.replaceAll("\\s*a\\s*", " ");
-		question = question.replaceAll("\\s*the\\s*", " ");
-		question = question.replaceAll("\\s*you\\s*", " ");
-		question = question.replaceAll("\\s*is\\s*", " ");
+		question = question.replaceAll("\\sme\\s", " ");
+		question = question.replaceAll("\\sa\\s", " ");
+		question = question.replaceAll("\\sthe\\s", " ");
+		question = question.replaceAll("\\syou\\s", " ");
+		question = question.replaceAll("\\sis\\*", " ");
 		question = question.replaceAll("\\s*give\\s*", " ");
-		question = question.replaceAll("\\s*all\\s*", " ");
-		question = question.replaceAll("\\s*of\\s*", " ");
+		question = question.replaceAll("\\sall\\s", " ");
+		question = question.replaceAll("\\sof\\s", " ");
 		question = question.replaceAll("  ", " "); // Replacing all 2 spaces
 		// with 1 space
 		question = question.trim();

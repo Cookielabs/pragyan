@@ -51,9 +51,11 @@ public class answerGenerator {
      * */
     public List<QueryBucket> buildQueries() throws Exception{
     	// Finding the type of the question
+    	
     	List<String> questionAndType = Util.getQuestionType(parsedQuestion);
     	
     	// Get the predicates of the question
+    	System.out.println("Calling getpredicate"+parsedQuestion);
     	List<LexiconPredicate> predicateList = lexicon.getPredicates(parsedQuestion,50,20); //find all matching predicates
     	List<LexiconLiteral> literalList = lexicon.getLiterals(parsedQuestion,50,20);
         //List<LexiconLiteral> literalList = lexicon.getLiterals(parsedQuestion);
