@@ -56,8 +56,8 @@ public class answerGenerator {
     	
     	// Get the predicates of the question
     	System.out.println("Calling getpredicate"+parsedQuestion);
-    	List<LexiconPredicate> predicateList = lexicon.getPredicates(parsedQuestion,50,20); //find all matching predicates
-    	List<LexiconLiteral> literalList = lexicon.getLiterals(parsedQuestion,50,20);
+    	List<LexiconPredicate> predicateList = lexicon.getPredicates(parsedQuestion,50,5); //find all matching predicates
+    	List<LexiconLiteral> literalList = lexicon.getLiterals(parsedQuestion,50,5);
         //List<LexiconLiteral> literalList = lexicon.getLiterals(parsedQuestion);
     	List<QueryBucket> dummy= null;
     	//System.out.println(questionAndType.get(0));

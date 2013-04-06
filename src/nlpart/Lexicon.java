@@ -362,7 +362,9 @@ public class Lexicon
 			 * sleepy now. I'm writing off the same thing for getLiterals
 			 */
 		}
-		return results;
+		if (results.size() < n) { n = results.size(); };
+		return results.subList(0, n);
+		
 
 	}
 
@@ -447,7 +449,8 @@ public class Lexicon
 					+ "\n Literal URI: " + lexiconLiteral.URI + "\n Literal questionMatch"
 					+ lexiconLiteral.QuestionMatch);
 		}
-		return resultToSend;
+		if (resultToSend.size() < n) { n = resultToSend.size(); };
+		return resultToSend.subList(0, n);
 	}
 
 	public List<String> getPermutations(String question) throws Exception {
