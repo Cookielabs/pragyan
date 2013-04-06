@@ -18,9 +18,9 @@ An open source question answering system.
 
 ## Deadlines and the week ahead##
 - Periodicals on 10th, so cooling period from monday evening
-- Review on 16th, 5 days from periodical -  ** 3 developement days available **
+- Review on 16th, 5 days from periodical -  **3 developement days available**
 
 ## Plans for the review ##
 * A full fledged product, but without the visualization part. Full working queries
 * The document that vidhya ma'am asked for
-* _ To come up with a minimum of 30-40 questions and sparql queries written for them _ 
+* _To come up with a minimum of 30-40 questions and sparql queries written for them_ 
