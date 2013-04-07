@@ -138,31 +138,30 @@ public class Lexicon
 			}
 		}
 		System.out.println("outside");
-		
+
 		System.out.println("--------------------------------------------");
 		predicateList = scorePredicates(interPredicateList, topN);
 		long endTime = System.currentTimeMillis();
 
 		System.out.println("The total time taken to get predicates is : " + (endTime - startTime) / 1000 + " seconds");
-		// predicateList = addDomainAndRange(predicateList);
+		predicateList = addDomainAndRange(predicateList);
 		Collections.sort(predicateList);
 		for (LexiconPredicate lexiconPredicate : predicateList)
 		{
-			System.out.print(lexiconPredicate.label);
+			System.out.print(lexiconPredicate.URI+" "+lexiconPredicate.label);
 			System.out.println(" => Levenshtein Score: " + lexiconPredicate.score);
 		}
-		
-		
+
 		return this.predicateList;
 	}
 
 	public List<LexiconLiteral> getLiterals(String question, int limit, int topN) throws Exception {
-/*
- * IMPORTANT
- * TODO: Need to remove the duplicates. All the methods that I've tried have acting weird. Need a proper method to remove the duplicates. 
- * Have to override the equals and hashCode methods and remove the duplicates by comparing the objects
- *   
- * */
+		/*
+		 * IMPORTANT TODO: Need to remove the duplicates. All the methods that
+		 * I've tried have acting weird. Need a proper method to remove the
+		 * duplicates. Have to override the equals and hashCode methods and
+		 * remove the duplicates by comparing the objects
+		 */
 		long startTime = System.currentTimeMillis();
 
 		List<LexiconLiteral> interLiteralList = new ArrayList<LexiconLiteral>();
@@ -319,6 +318,11 @@ public class Lexicon
 			long endTime = System.currentTimeMillis();
 			System.out.println("The total time taken to get predicates is : " + (endTime - startTime) / 1000
 					+ " seconds");
+			for (LexiconLiteral lexiconLiteral : literalList)
+			{
+				System.out.print(lexiconLiteral.URI+" " + lexiconLiteral.label);
+				System.out.println(" => Levenshtein Score: " + lexiconLiteral.score);
+			}
 			return literalList;
 		}
 	}
@@ -352,9 +356,9 @@ public class Lexicon
 			{
 				tmplabel = predicate.label;
 			}
-			
+
 			predicate.score = Util.calculateLevenshteinDistance(predicate.QuestionMatch, tmplabel);
-			
+
 			/*
 			 * Now that we have got the scores of the predicates, we can sort
 			 * them in ascending order. The one with the least score is the
@@ -362,14 +366,20 @@ public class Lexicon
 			 * sleepy now. I'm writing off the same thing for getLiterals
 			 */
 		}
-		if (results.size() < n) { n = results.size(); };
-		return results.subList(0, n);
-		
+		List<LexiconPredicate> resultToSend = new ArrayList<LexiconPredicate>();
+		resultToSend.addAll(results);
+		Collections.sort(resultToSend);
+		if ( resultToSend.size() < n )
+		{
+			n = resultToSend.size();
+		}
+		;
+		return resultToSend.subList(0, n);
 
 	}
 
 	public List<LexiconLiteral> scoreLiterals(List<LexiconLiteral> results, int n) {
-		
+
 		System.out.println("Inside SCore literal");
 		for (LexiconLiteral literal : results)
 		{
@@ -423,34 +433,106 @@ public class Lexicon
 				if ( literal.equals(literal2) )
 				{
 					dupRemovedResults.add(literal);
-					System.out.println("The two objects are the same");
+				//	System.out.println("The two objects are the same");
 				}
 				if ( literal.URI == literal2.URI && !literal.equals(literal2) )
 				{
 					// removing the one of the larger distance
 					dupRemovedResults.add((literal.score <= literal2.score) ? literal : literal2);
-					System.out.println("The two objects are NOT the same");
+					//System.out.println("The two objects are NOT the same");
 				}
 			}
 		}
 		System.out.println("Removed duplicates:");
-		/*for (LexiconLiteral lexiconLiteral : dupRemovedResults)
-		{
-			System.out.println("Literal Label:" + lexiconLiteral.label + "\n Score: " + lexiconLiteral.score
-					+ "\n Literal URI: " + lexiconLiteral.URI + "\n Literal questionMatch"
-					+ lexiconLiteral.QuestionMatch);
-		}*/
+		/*
+		 * for (LexiconLiteral lexiconLiteral : dupRemovedResults) {
+		 * System.out.println("Literal Label:" + lexiconLiteral.label +
+		 * "\n Score: " + lexiconLiteral.score + "\n Literal URI: " +
+		 * lexiconLiteral.URI + "\n Literal questionMatch" +
+		 * lexiconLiteral.QuestionMatch); }
+		 */
 		List<LexiconLiteral> resultToSend = new ArrayList<LexiconLiteral>();
 		resultToSend.addAll(dupRemovedResults);
 		Collections.sort(resultToSend);
-		for (LexiconLiteral lexiconLiteral : resultToSend)
+		/*
+		 * for (LexiconLiteral lexiconLiteral : resultToSend) {
+		 * System.out.println("Literal Label:" + lexiconLiteral.label +
+		 * "\n Score: " + lexiconLiteral.score + "\n Literal URI: " +
+		 * lexiconLiteral.URI + "\n Literal questionMatch" +
+		 * lexiconLiteral.QuestionMatch); }
+		 */
+		if ( resultToSend.size() < n )
 		{
-			System.out.println("Literal Label:" + lexiconLiteral.label + "\n Score: " + lexiconLiteral.score
-					+ "\n Literal URI: " + lexiconLiteral.URI + "\n Literal questionMatch"
-					+ lexiconLiteral.QuestionMatch);
+			n = resultToSend.size();
 		}
-		if (resultToSend.size() < n) { n = resultToSend.size(); };
+		;
 		return resultToSend.subList(0, n);
+	}
+
+	private List<LexiconPredicate> addDomainAndRange(List<LexiconPredicate> predicateList) {
+
+		System.out.println("Entered domain and range");
+		/*
+		 * I tried getting the range and domain of all the predicates in dbpedia
+		 * with this
+		 * 
+		 * PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+		 * SELECT
+		 * ?domain ?range WHERE { ?predicate rdfs:domain ?domain ; rdfs:range * ?range. }
+		 * 
+		 * It gave all the properties in DBpedia that had domain and range. But while running the same query with the URIs of the ones in the predicate list, 
+		 * it looks like few things don't have a domain and range mentioned. So we need to think of a way to get the domain and range of those items. 
+		 */
+		for (LexiconPredicate lexiconPredicate : predicateList)
+		{
+			String queryString = "Select distinct ?domain ?range where { {" +
+
+			"<" + lexiconPredicate.URI + ">" + "<http://www.w3.org/2000/01/rdf-schema#domain> ?domain.}" + "union { <"
+					+ lexiconPredicate.URI + ">" + " <http://www.w3.org/2000/01/rdf-schema#range> ?range ." + "}}";
+
+			Query queryObj = QueryFactory.create(queryString);
+			String sparqlEndpoint = "http://dbpedia.org/sparql";
+			QueryExecution qe = QueryExecutionFactory.sparqlService(sparqlEndpoint, queryObj);
+			ResultSet domainAndRangeResults = qe.execSelect();
+
+			while (domainAndRangeResults.hasNext())
+			{
+				QuerySolution domainAndRangeSolution = domainAndRangeResults.nextSolution();
+				if ( domainAndRangeSolution.get("domain") != null )
+				{
+					if ( !lexiconPredicate.domains.contains(domainAndRangeSolution.get("domain").toString()) )
+					{
+						lexiconPredicate.domains.add(domainAndRangeSolution.get("domain").toString());
+					}
+				}
+				if ( domainAndRangeSolution.get("range") != null )
+				{
+					if ( !lexiconPredicate.ranges.contains(domainAndRangeSolution.get("range").toString()) )
+					{
+						lexiconPredicate.ranges.add(domainAndRangeSolution.get("range").toString());
+					}
+				}
+			}
+		}
+		for (LexiconPredicate lexiconPredicate : predicateList)
+		{
+			for (String domain : lexiconPredicate.domains)
+			{
+				System.out.println("The domain of " + lexiconPredicate.label + " is => " + domain);
+			}
+
+		}
+		for (LexiconPredicate lexiconPredicate : predicateList)
+		{
+			for (String range : lexiconPredicate.ranges)
+			{
+				System.out.println("The domain of " + lexiconPredicate.label + " is => " + range);
+			}
+
+		}
+		System.out.println("left domain and range");
+		return predicateList;
+
 	}
 
 	public List<String> getPermutations(String question) throws Exception {
@@ -475,7 +557,7 @@ public class Lexicon
 		question = question.replaceAll("\\sis\\*", " ");
 		question = question.replaceAll("\\s*give\\s*", " ");
 		question = question.replaceAll("\\sall\\s", " ");
-		question = question.replaceAll("\\sof\\s", " ");
+		//question = question.replaceAll("\\sof\\s", " ");
 		question = question.replaceAll("  ", " "); // Replacing all 2 spaces
 		// with 1 space
 		question = question.trim();
