@@ -1,8 +1,11 @@
 package nlpart;
 
 import java.util.*;
+import java.util.logging.Level;
 
 import javax.print.attribute.standard.DateTimeAtCreation;
+
+import org.apache.log4j.Logger;
 
 import edu.mit.jwi.morph.WordnetStemmer;
 
@@ -21,6 +24,7 @@ public class Lexicon
 	private List<LexiconLiteral> literalList;
 	private Boolean predicateFilled;
 	private Boolean literalFilled;
+	private String tmplog;
 
 	public Lexicon() {
 		predicateList = new ArrayList<LexiconPredicate>();
@@ -45,11 +49,18 @@ public class Lexicon
 		List<LexiconPredicate> interPredicateList = new ArrayList<LexiconPredicate>();
 		List<String> permutationList = getPermutations(question);
 		// permutationList = getPermutations(question);
+		
+		tmplog = "";
 		for (String string : permutationList)
 		{
-			System.out.println("=>" + string);
+			//System.out.println("=>" + string);
+			
+			tmplog+=string+"\r\n";
 		}
-
+		
+		Util.writeToLog(Level.INFO,"List of all permutations"+"\r\n"+tmplog);
+		tmplog="";
+		
 		String bifContainsValue = "";
 		for (String permutation : permutationList)
 		{
@@ -75,10 +86,13 @@ public class Lexicon
 					+ bifContainsValue + "\" } " +
 
 					"} limit " + limit;
-			System.out.println(queryString);
+			//System.out.println(queryString);
 
+			
+			
 			try
 			{
+				
 				Query queryObj = QueryFactory.create(queryString);
 				String sparqlEndpoint = "http://dbpedia.org/sparql";
 				QueryExecution qe = QueryExecutionFactory.sparqlService(sparqlEndpoint, queryObj);
@@ -102,20 +116,25 @@ public class Lexicon
 					QueryExecution isItUsedObj = QueryExecutionFactory.sparqlService(sparqlEndpoint, isItUsed);
 					ResultSet isItUsedResult = isItUsedObj.execSelect();
 					ResultSetRewindable resultset = ResultSetFactory.copyResults(isItUsedResult);
-					System.out.println(predicateURI.toString());
+					//System.out.println(predicateURI.toString());
 					// System.out.println("Result Size: " + resultset.size());
 					if ( resultset.size() != 0 )
 					{
 						hasResuts = true;
+						
 					}
 					else
 					{
-						System.out.println("No result. URI not used");
-
+						//System.out.println("No result. URI not used");
+					
+						Util.writeToLog(Level.INFO, "This predicate is not used: \r\n"+predicateURI.toString());
 					}
 					Boolean exists = false;
+					
 					for (LexiconPredicate x : interPredicateList)
 					{
+						//finding if the predicateURI already exists 
+						
 						if ( x.URI == predicateURI.toString() && x.QuestionMatch == permutation )
 						{
 							exists = true;
@@ -123,35 +142,49 @@ public class Lexicon
 						}
 					}
 					// adding the new predicate to the interPredicatelist
+					
 					if ( !exists && hasResuts )
-					{
+					{			
 						tmplexiconpredicate.URI = predicateURI.toString();
 						tmplexiconpredicate.QuestionMatch = permutation;
 						tmplexiconpredicate.label = predicateLabel.toString();
 						interPredicateList.add(tmplexiconpredicate);
+						tmplog+=predicateURI.toString()+"\r\n";
 					}
 				}
 			}
+		
 			catch (Exception e)
 			{
 				System.out.println("Exception caught: " + e.toString());
 			}
 		}
-		System.out.println("outside");
+		
+			
+		Util.writeToLog(Level.INFO, "Predicates Found (w/o duplicates) : \r\n"+tmplog);
+		tmplog="";
+		
+		//System.out.println("outside");
 
-		System.out.println("--------------------------------------------");
+		//System.out.println("--------------------------------------------");
 		predicateList = scorePredicates(interPredicateList, topN);
 		long endTime = System.currentTimeMillis();
 
 		System.out.println("The total time taken to get predicates is : " + (endTime - startTime) / 1000 + " seconds");
+		
+		Util.writeToLog(Level.INFO, "The total time taken to get predicates is : " + (endTime - startTime) / 1000 + " seconds");
+		
 		predicateList = addDomainAndRange(predicateList);
 		Collections.sort(predicateList);
 		for (LexiconPredicate lexiconPredicate : predicateList)
 		{
-			System.out.print(lexiconPredicate.URI+" "+lexiconPredicate.label);
-			System.out.println(" => Levenshtein Score: " + lexiconPredicate.score);
+			//System.out.print(lexiconPredicate.URI+" "+lexiconPredicate.label);
+			//System.out.println(" => Levenshtein Score: " + lexiconPredicate.score);
+			tmplog+=lexiconPredicate.URI+" "+lexiconPredicate.label+"  Score=> "+lexiconPredicate.score+"\r\n";
 		}
-
+		
+		Util.writeToLog(Level.INFO,"Predicates with Levenshtein Score \r\n"+tmplog);
+				
 		return this.predicateList;
 	}
 
@@ -170,7 +203,7 @@ public class Lexicon
 
 		for (String permutations : permutationList)
 		{
-			System.out.println("=> " + permutations);
+			//System.out.println("=> " + permutations);
 		}
 		if ( literalFilled )
 		{
@@ -187,6 +220,7 @@ public class Lexicon
 		else
 		{
 			String bifContainsValue = "";
+			tmplog="";
 			for (String permutation : permutationList)
 			{
 				bifContainsValue = "";
@@ -207,7 +241,7 @@ public class Lexicon
 						+ " && !(?typeOfOwner = <http://www.w3.org/2002/07/owl#DatatypeProperty> )))."
 						+ "?literal <bif:contains> '\"" + permutation + "\"'. } limit " + limit;
 
-				System.out.println(queryString);
+				//System.out.println(queryString);
 				Query queryObj = QueryFactory.create(queryString);
 				String sparqlEndpoint = "http://dbpedia.org/sparql";
 				QueryExecution qe = QueryExecutionFactory.sparqlService(sparqlEndpoint, queryObj);
@@ -221,28 +255,24 @@ public class Lexicon
 						RDFNode literalLabel = qsolution.get("literal");
 						String resultTypeOfOwner = "";
 						String resultQuestionMatch = permutation;
-						LexiconLiteral tmplexiconLiteral = new LexiconLiteral();
+						LexiconLiteral tmpLexiconLiteral = new LexiconLiteral();
 
 						if ( qsolution.get("redirects") != null )
 						{
 							literalURI = qsolution.get("redirects");
-							if ( qsolution.get("redirectsTypeOfOwner") != null )
-							{
-								resultTypeOfOwner = qsolution.get("redirectsTypeOfOwner").toString();
-							}
 						}
 						else
 						{
 							literalURI = qsolution.get("subject");
-							if ( qsolution.get("typeOfOwner") != null )
-							{
-								resultTypeOfOwner = qsolution.get("typeOfOwner").toString();
-							}
 
 						}
-						System.out.println("Current Values:literalURI => " + literalURI.toString()
-								+ "\nliteralLabel => " + literalLabel.toString() + "\nQuestionmatch => "
-								+ resultQuestionMatch + "\nType of owner =>" + resultTypeOfOwner + "\n");
+						
+						//System.out.println("Current Values:literalURI => " + literalURI.toString()
+						//		+ "\nliteralLabel => " + literalLabel.toString() + "\nQuestionmatch => "
+						//		+ resultQuestionMatch + "\n");
+						
+										
+						
 						/*
 						 * This literal shit is pretty complex. One resource can
 						 * be of various types ( typeOfOwner ). So like
@@ -258,51 +288,30 @@ public class Lexicon
 
 						for (LexiconLiteral x : interLiteralList)
 						{
-							if ( x.URI == literalURI.toString() && x.label == literalLabel.toString()
-									&& x.QuestionMatch == resultQuestionMatch )
+							// checking if Literal URI already exists
+							if ( x.URI == literalURI.toString() && x.QuestionMatch == resultQuestionMatch )
 							{
 								exists = true;
-								if ( Arrays.asList(x.typeOfOwner).contains(resultTypeOfOwner)
-										&& resultTypeOfOwner.length() > 0 )
-								{
-									exactThingExists = true;
-									break;
-								}
+								break;
 							}
 						}
 
-						// adding the new literals to the literallist.
+						// adding the new literals to the literal list.
 						if ( exists )
 						{
-							System.out.println("exists");
-							if ( exists && exactThingExists )
-							{
-								System.out.println("Exact thing exists\n\n");
-							}
+							//System.out.println("Literal URI already exists");
+					
 						}
-						else
-						{
-							System.out.println("Doesn't exists\n\n");
-						}
+						
 						if ( !exists )
 						{
-							LexiconLiteral tmpLexiconLiteral = new LexiconLiteral(literalURI.toString(),
-									literalLabel.toString(), resultQuestionMatch, resultTypeOfOwner);
+												
+							tmpLexiconLiteral.URI = literalURI.toString();
+							tmpLexiconLiteral.QuestionMatch = resultQuestionMatch;
+							tmpLexiconLiteral.label = literalLabel.toString();
 							interLiteralList.add(tmpLexiconLiteral);
-
-						}
-
-						if ( !exactThingExists && exists )
-						{
-							for (LexiconLiteral lexlit : interLiteralList)
-							{
-								if ( lexlit.URI == literalURI.toString() && lexlit.label == literalLabel.toString() )
-								{
-									lexlit.typeOfOwner.add(resultTypeOfOwner);
-								}
-							}
-
-						}
+							
+						}		
 
 					}
 				}
@@ -312,17 +321,37 @@ public class Lexicon
 				}
 
 			}
-
+			Util.writeToLog(Level.INFO, "Literals w/o Duplicates are added to Literal List ");
 			literalList = scoreLiterals(interLiteralList, topN);
+			
+			//adding typeOfOwner to the finally short listed literalList
+			literalList = addTypeOfOwner(literalList);
+			
+			/*
+			tmplog="";
+			for (LexiconLiteral lexiconLiteral : literalList)
+			{
+				tmplog+="Label: "+lexiconLiteral.label+"\r\n TypesOfOwner: \r\n";
+				for(int i=0;i<lexiconLiteral.typeOfOwner.size();i++){
+				    tmplog+=lexiconLiteral.typeOfOwner.get(i)+"\r\n";
+				} 
+			}
+			
+			Util.writeToLog(Level.INFO, "Literal List \r\n"+tmplog);
+			*/
+			
 			literalFilled = true;
 			long endTime = System.currentTimeMillis();
-			System.out.println("The total time taken to get predicates is : " + (endTime - startTime) / 1000
+			System.out.println("The total time taken to get the Literals is : " + (endTime - startTime) / 1000
 					+ " seconds");
 			for (LexiconLiteral lexiconLiteral : literalList)
 			{
-				System.out.print(lexiconLiteral.URI+" " + lexiconLiteral.label);
-				System.out.println(" => Levenshtein Score: " + lexiconLiteral.score);
+				//System.out.print(lexiconLiteral.URI+" " + lexiconLiteral.label);
+				//System.out.println(" => Levenshtein Score: " + lexiconLiteral.score);
+				tmplog+=lexiconLiteral.URI+"  permutation:"+lexiconLiteral.QuestionMatch+"  label:"+lexiconLiteral.label+"  Score=> "+lexiconLiteral.score+"\r\n";
 			}
+			
+			Util.writeToLog(Level.INFO,"Literals with Levenshtein Score \r\n"+tmplog);
 			return literalList;
 		}
 	}
@@ -377,13 +406,48 @@ public class Lexicon
 		return resultToSend.subList(0, n);
 
 	}
+	
+	//Method to add the typeOfOwner to the final short listed literals
+	
+	public List<LexiconLiteral> addTypeOfOwner(List<LexiconLiteral> results)
+	{
+		for (LexiconLiteral literal : results)
+		{
+			
+			String queryString = "select distinct ?type where{"+
+					"<" + literal.URI + ">" + "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?type.}";
+
+			//System.out.println(queryString);
+			Query queryObj = QueryFactory.create(queryString);
+			String sparqlEndpoint = "http://dbpedia.org/sparql";
+			QueryExecution queryExec = QueryExecutionFactory.sparqlService(sparqlEndpoint, queryObj);
+			try
+			{
+				ResultSet typeOfOwnerResults = queryExec.execSelect();
+				while (typeOfOwnerResults.hasNext())
+				{
+					QuerySolution qsolution = typeOfOwnerResults.nextSolution();
+					RDFNode typeOfOwner = qsolution.get("type");
+					if (typeOfOwner != null )
+					{
+					literal.typeOfOwner.add(typeOfOwner.toString());
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				System.out.println("Exception caught: " + e.toString());
+			}
+		}
+		return results;
+	}
 
 	public List<LexiconLiteral> scoreLiterals(List<LexiconLiteral> results, int n) {
 
-		System.out.println("Inside SCore literal");
+		//System.out.println("Inside Score literal");
 		for (LexiconLiteral literal : results)
 		{
-			// adding a levenshtein score to each one of them where predicates
+			// adding a levenshtein score to each one of them where literals
 			// of high score will make a bad match
 			// removing the @en in the end of each label
 			// removing the terms between brackets like the dark knight (the
@@ -420,7 +484,7 @@ public class Lexicon
 		// removing duplicates that have the same resource
 		/*
 		 * TODO: this is a MAJOR to-do. Need to override the equals and hashCode
-		 * functions top remove the deplicates. I'm postponing it because I want
+		 * functions top remove the duplicates. I'm postponing it because I want
 		 * to complete the query generation part! But this is very important!
 		 */
 
@@ -443,7 +507,7 @@ public class Lexicon
 				}
 			}
 		}
-		System.out.println("Removed duplicates:");
+		//System.out.println("Removed duplicates:");
 		/*
 		 * for (LexiconLiteral lexiconLiteral : dupRemovedResults) {
 		 * System.out.println("Literal Label:" + lexiconLiteral.label +
@@ -471,7 +535,7 @@ public class Lexicon
 
 	private List<LexiconPredicate> addDomainAndRange(List<LexiconPredicate> predicateList) {
 
-		System.out.println("Entered domain and range");
+		//System.out.println("Entered domain and range");
 		/*
 		 * I tried getting the range and domain of all the predicates in dbpedia
 		 * with this
@@ -514,11 +578,13 @@ public class Lexicon
 				}
 			}
 		}
+		tmplog="";
 		for (LexiconPredicate lexiconPredicate : predicateList)
 		{
 			for (String domain : lexiconPredicate.domains)
 			{
-				System.out.println("The domain of " + lexiconPredicate.label + " is => " + domain);
+				//System.out.println("The domain of " + lexiconPredicate.label + " is => " + domain);
+				tmplog+="The domain of " + lexiconPredicate.URI + " is => " + domain+"\r\n";
 			}
 
 		}
@@ -526,17 +592,18 @@ public class Lexicon
 		{
 			for (String range : lexiconPredicate.ranges)
 			{
-				System.out.println("The domain of " + lexiconPredicate.label + " is => " + range);
+				//System.out.println("The range of " + lexiconPredicate.label + " is => " + range);
+				tmplog+="The range of " + lexiconPredicate.URI + " is => " + range+"\r\n";
 			}
-
 		}
-		System.out.println("left domain and range");
+		//System.out.println("left domain and range");
+		Util.writeToLog(Level.INFO, "The domain and the range of predicates \r\n"+tmplog);
+		tmplog="";
 		return predicateList;
-
 	}
 
 	public List<String> getPermutations(String question) throws Exception {
-		System.out.println("Called get predicates");
+		Util.writeToLog(Level.INFO, "getting all the Permutations of the sanitized question");
 		Set<String> permutationList = new LinkedHashSet<>();
 
 		// Removing the unwanted words from the question
@@ -562,7 +629,7 @@ public class Lexicon
 		// with 1 space
 		question = question.trim();
 
-		System.out.println(question);
+		//System.out.println(question);
 		List<String> splitQuestion = new ArrayList<String>();
 		splitQuestion = Arrays.asList(question.split(" "));
 		String questionNoSpace = question.replaceAll(" ", "");

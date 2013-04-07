@@ -1,22 +1,38 @@
 package nlpart;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.InputStreamReader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.io.*;
+import java.util.logging.*;
 import java.util.regex.Pattern;
 import java.util.*;
 
 public class Util extends Exception {
 
-	private static Logger logger = Logger.getLogger("myLog");
-
-	public static void writeToLog(Level level, String s) {
-		logger.log(level, s);
-
+	private static FileHandler fileHandle;
+	private static Logger logger;
+	
+	//A Logger that logs in myLogFile.log as simple text 
+	public static void openLogFile() throws Exception {
+		Logger globalLogger = Logger.getLogger("");
+		Handler[] handlers = globalLogger.getHandlers();
+		for(Handler handler : handlers) {
+		    globalLogger.removeHandler(handler);
+		}
+		logger = Logger.getLogger("myLog");
+		fileHandle = new FileHandler("myLogFile.log", false);
+		logger.addHandler(fileHandle);
+		fileHandle.setFormatter(new SimpleFormatter());
 	}
+	
+	public static void writeToLog(Level level, String s) {
+		//logging along with class name and method name
+		logger.logp(level, Thread.currentThread().getStackTrace()[2].getClassName() ,Thread.currentThread().getStackTrace()[2].getMethodName() , s+"\r\n");
+		
+	}
+	
+	public static void closeLogFile() {
+		fileHandle.close();
+	}
+	
 
 	public static List<String> getQuestionType(String question) throws Exception {
 		List<String> questionAndType = new ArrayList<String>();
