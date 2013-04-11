@@ -41,8 +41,7 @@ public class LexiconPredicate implements Comparable<LexiconPredicate>{
 		//ascending order
 		return this.score- score2;
  
-		//descending order
-		//return compareQuantity - this.quantity;
+		
  
 	}
 

@@ -8,7 +8,7 @@ public class Nlpart {
 	public static void main(String args[]) throws Exception{
 		Util.openLogFile();
 		Util.writeToLog(Level.INFO, "Starting...");
-		String inputQuestion = "abstract sachin tendulkar";
+		String inputQuestion = "population census india";
 		Util.writeToLog(Level.INFO, "The question is: "+inputQuestion);
 		System.out.println("The question is: "+inputQuestion);
 		System.out.println("Querying.. Please wait..");
