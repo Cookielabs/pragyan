@@ -1,0 +1,12 @@
+package proj1;
+import java.io.*;
+import java.lang.*;
+import java_cup.runtime.*;
+%%
+%cup
+letter=[a-z]
+digit=[0-9]
+%%
+{digit}({digit})* {System.out.println("Digit:\t"+yytext()); return new Symbol(1);}
+{letter}({letter}|{digit})* { System.out.println("ID:   "+yytext()); return new Symbol(2);}
+. { System.out.println("ERROR:   "+yytext());}

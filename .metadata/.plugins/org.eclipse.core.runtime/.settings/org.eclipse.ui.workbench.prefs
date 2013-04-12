@@ -1,0 +1,6 @@
+ColorsAndFontsPreferencePage.expandedCategories=Torg.eclipse.jdt.ui.presentation
+ColorsAndFontsPreferencePage.selectedElement=Forg.eclipse.jdt.ui.editors.textfont
+ENABLED_DECORATORS=org.eclipse.wst.server.ui.decorator\:false,org.eclipse.jdt.ui.override.decorator\:true,org.eclipse.jdt.ui.interface.decorator\:false,org.eclipse.jdt.ui.buildpath.decorator\:true,org.eclipse.pde.ui.binaryProjectDecorator\:false,org.eclipse.team.cvs.ui.decorator\:false,org.eclipse.ui.LinkedResourceDecorator\:true,org.eclipse.ui.VirtualResourceDecorator\:true,org.eclipse.ui.ContentTypeDecorator\:true,org.eclipse.ui.ResourceFilterDecorator\:false,org.eclipse.wst.jsdt.ui.override.decorator\:true,org.eclipse.wst.server.ui.navigatorDecorator\:true,org.python.pydev.navigator.decorator.problemsLabelDecorator\:true,
+eclipse.preferences.version=1
+org.eclipse.jdt.ui.editors.textfont=1|Inconsolata|12.0|0|GTK|1|;
+org.eclipse.jdt.ui.javadocfont=1|Inconsolata|12.0|0|GTK|1|;

@@ -1,0 +1,40 @@
+package nlpart;
+
+import java.util.*;
+
+/*
+ * This class stores all the "Literals" and the "Predicates" that are found in the Question asked. 
+ * 
+ * There are two main functions in this Lexicon class
+ * 1. getLiteral()
+ * 2. getPredicate()
+ * */	
+public class Lexicon {
+
+	private List<LexiconPredicate> predicateList;
+    private List<LexiconLiteral> literalList;
+    private Boolean predicateFilled;
+    private Boolean literalFilled;
+    
+	public Lexicon(){
+		predicateList = new ArrayList<LexiconPredicate>();
+        literalList = new ArrayList<LexiconLiteral>();
+        predicateFilled = false;
+        literalFilled = false;
+	}
+	
+	
+	public List<LexiconPredicate> getPredicates(String question){
+		List<String> permutations = getPermutations(question);
+		return this.predicateList;
+	}
+	
+	public List<String> getPermutations(String question){
+		List<String> permutationList = null;
+		
+		List<String> splitQuestion = new ArrayList<String>();
+		
+		return permutationList;
+	}
+	
+}

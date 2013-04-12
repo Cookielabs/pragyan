@@ -1,0 +1,60 @@
+package nlpart;
+
+import java.util.*;
+
+/*
+ * This class stores all the "Literals" and the "Predicates" that are found in the Question asked. 
+ * 
+ * There are two main functions in this Lexicon class
+ * 1. getLiteral()
+ * 2. getPredicate()
+ * */	
+public class Lexicon {
+
+	private List<LexiconPredicate> predicateList;
+    private List<LexiconLiteral> literalList;
+    private Boolean predicateFilled;
+    private Boolean literalFilled;
+    
+	public Lexicon(){
+		predicateList = new ArrayList<LexiconPredicate>();
+        literalList = new ArrayList<LexiconLiteral>();
+        predicateFilled = false;
+        literalFilled = false;
+	}
+	
+	
+	public List<LexiconPredicate> getPredicates(String question) throws Exception{
+		//List<String> permutations = getPermutations(question);
+		getPermutations(question);
+		return this.predicateList;
+	}
+	
+	public void getPermutations(String question) throws Exception{
+		System.out.println("Called get predicates");
+		List<String> permutationList = null;
+	
+		
+		//Removing the unwanted words from the question
+		question = question.replaceAll("\\swho\\s", " ");
+		question = question.replaceAll("\\swhat\\s", " ");
+		question = question.replaceAll("\\show\\s", " ");
+		question = question.replaceAll("\\smany\\s", " ");
+		question = question.replaceAll("\\smuch\\s", " ");
+		question = question.replaceAll("\\swould\\s", " ");
+		question = question.replaceAll("\\scould\\s", " ");
+		question = question.replaceAll("\\scan\\s", " ");
+		question = question.replaceAll("\\splease\\s", " ");
+		question = question.replaceAll("\\stell\\s", " ");
+		question = question.replaceAll("\\sme\\s", " ");
+		question = question.replaceAll("\\sa\\s", " ");
+		question = question.replaceAll("\\sthe\\s ", " ");
+		
+		
+		System.out.println(question);
+		// This is the permutation algorithm
+		
+		//return permutationList;
+	}
+	
+}

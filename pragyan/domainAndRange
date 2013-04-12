@@ -1,0 +1,21 @@
+Getting domain and range:
+
+step 1:
+select ?domain ?range where{{
+<http://dbpedia.org/ontology/birthPlace> <http://www.w3.org/2000/01/rdf-schema#domain> ?domain . } 
+union { <http://dbpedia.org/ontology/birthPlace> <http://www.w3.org/2000/01/rdf-schema#range> ?range . }}	
+					
+					
+
+select ?domain where {?x <http://dbpedia.org/ontology/birthPlace> ?y .
+?x a ?domain . 
+filter(!REGEX(STR(?domain) ,'http://www.w3.org/2002/07/owl#Thing','i'))
+} limit 20
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+select distinct * where{
+?Person <http://dbpedia.org/ontology/birthPlace> ?Range . 
+?Person <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/Person>
+filter(?Agent = <http://dbpedia.org/resource/A._P._J._Abdul_Kalam> || ?Thing = <http://dbpedia.org/resource/A._P._J._Abdul_Kalam> || ?Person = <http://dbpedia.org/resource/A._P._J._Abdul_Kalam>)
+}

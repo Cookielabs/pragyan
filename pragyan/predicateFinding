@@ -1,0 +1,29 @@
+SELECT  * WHERE  { {
+                                    ?predicate <http://www.w3.org/2000/01/rdf-schema#label> ?label .
+                                    ?predicate <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty>.
+                                    ?label bif:contains '"odi shirt"'} 
+                                    union {
+                                    ?predicate <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+                                    ?predicate <http://www.w3.org/2000/01/rdf-schema#label> ?label .
+                                    ?label bif:contains '"odi shirt"' } 
+                                    union { 
+                                    ?predicate <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>  <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property>  .
+                                    ?predicate <http://www.w3.org/2000/01/rdf-schema#label> ?label .
+                                    ?label bif:contains '"odi shirt"' } 
+                                    union { 
+                                    ?predicate <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>  <http://www.w3.org/1999/02/22-rdf-syntax-ns#Person>  .
+                                    ?predicate <http://www.w3.org/2000/01/rdf-schema#label> ?label .
+                                    ?label bif:contains '"odi shirt"' } 
+
+                                    } limit 30
+                                    
+                                    
+SELECT  ?predicate ?label WHERE {{ 
+		?predicate <http://www.w3.org/2000/01/rdf-schema#label> ?label . 
+		?predicate <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?propertyType. 
+		?label bif:contains '"odi shirt"'} 
+		
+                                    filter ( ?propertyType = <http://www.w3.org/2002/07/owl#DatatypeProperty> || 
+                                    ?propertyType = <http://www.w3.org/2002/07/owl#ObjectProperty> ||
+                                    ?propertyType = <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property>  ) 
+                                    } limit 30

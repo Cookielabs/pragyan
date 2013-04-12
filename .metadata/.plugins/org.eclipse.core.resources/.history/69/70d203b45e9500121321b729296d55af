@@ -1,0 +1,34 @@
+package nlpart;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.InputStreamReader;	
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.*;
+public class Util extends Exception{
+	
+	private static Logger logger = Logger.getLogger("myLog");
+	
+	public static void writeToLog(Level level, String s){
+		logger.log(level,s);
+		
+	}
+	
+	public List<String> getQuestionType(String question){
+		List<String> questionAndType = new ArrayList<String>();
+		
+		String fromFile;
+		String questionType;
+		
+		questionAndType.add(question);
+		questionAndType.add("normal");
+		
+		Boolean cleanQuestion = false;
+		BufferedReader reader = new BufferedReader(new FileReader(new String("QuestionType.txt")));
+		return questionAndType;
+	}
+	
+	
+}
