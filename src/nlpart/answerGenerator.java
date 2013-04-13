@@ -32,7 +32,7 @@ public class answerGenerator
 		this.question = question.toLowerCase();
 		this.choice = choice;
 		
-		tmplog = "";
+		
 
 		sanitizeQuery();
 	
@@ -41,6 +41,7 @@ public class answerGenerator
 		List<String> queries = buildQueries();
 		System.out
 				.println("\n\n\n\n\n********************The answer to the Life, Universe and Everything :***************************** ");
+		tmplog = "";
 		for (String query : queries)
 		{
 

@@ -256,7 +256,6 @@ public class Lexicon
 						}
 
 						Boolean exists = false; // URI + Label only Exists
-						Boolean exactThingExists = false; // URI + Label +
 
 						for (LexiconLiteral x : interLiteralList)
 						{
@@ -267,10 +266,26 @@ public class Lexicon
 								break;
 							}
 						}
-
+						
+						//Each Literal URI contains a list of labels. 
+						//Selecting the best Label based on Levenshtein Score
 						if ( exists )
 						{
+							Iterator<LexiconLiteral> it = interLiteralList.iterator();
+							String uri1=literalURI.toString();
+							String label1=literalLabel.toString();
+							while(it.hasNext())
+							{
+								
+								LexiconLiteral obj = it.next();
+								
+							    if( obj.URI.equals(uri1) && !obj.label.equals(label1) )
+							    {
+							    
+							    	obj.label=bestLabelOf(obj.label, label1, obj.QuestionMatch);
+							    }
 
+							}
 						}
 
 						if ( !exists )
@@ -278,9 +293,23 @@ public class Lexicon
 
 							tmpLexiconLiteral.URI = literalURI.toString();
 							tmpLexiconLiteral.QuestionMatch = resultQuestionMatch;
-							tmpLexiconLiteral.label = literalLabel.toString();
+							String tmplabel=literalLabel.toString();
+							
+							//Sanitizing the label
+							if ( tmplabel.matches(".*@.*") || tmplabel.matches("\\(.*\\)") )
+							{
+								tmplabel = tmplabel.substring(0, tmplabel.length() - 3);
+								if ( tmplabel.matches("\\(.*\\)") )
+								{
+									tmplabel = tmplabel.replace("\\(.*\\)", " ");
+									tmplabel = tmplabel.replace("  ", " ");
+									tmplabel = tmplabel.trim();
+								}
+							}
+							
+							tmpLexiconLiteral.label = tmplabel;
+							
 							interLiteralList.add(tmpLexiconLiteral);
-
 						}
 
 					}
@@ -433,6 +462,7 @@ public class Lexicon
 		return predicateListToSend;
 	}
 
+	//THIS FUNCTION IS OBSOLETE, scoreThesePredicates(Predicates) is the correct working function
 	public List<LexiconPredicate> scorePredicates(List<LexiconPredicate> results, int n)
 	{
 
@@ -684,5 +714,23 @@ public class Lexicon
 		returningPermutationList.addAll(permutationList);
 		return returningPermutationList;
 	}
-
+	
+	String bestLabelOf(String objlabel, String label1, String permutation)
+	{
+		if ( label1.matches(".*@.*") || label1.matches("\\(.*\\)") )
+		{
+			label1 = label1.substring(0, label1.length() - 3);
+			if ( label1.matches("\\(.*\\)") )
+			{
+				label1 = label1.replace("\\(.*\\)", " ");
+				label1 = label1.replace("  ", " ");
+				label1 = label1.trim();
+			}
+		}
+		
+		int objlabelScore = Util.calculateLevenshteinDistance(permutation, objlabel);
+		int label1Score = Util.calculateLevenshteinDistance(permutation, label1);
+		
+		return (objlabelScore<label1Score) ? objlabel:label1;
+	}
 }

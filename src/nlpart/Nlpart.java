@@ -1,7 +1,6 @@
 package nlpart;
 
 import java.util.logging.*;
-import java.util.Scanner;
 import java.util.*;
 
 public class Nlpart {
@@ -15,6 +14,9 @@ public class Nlpart {
 		int choice = Integer.parseInt(in.nextLine());
 		String ques = in.nextLine();
 		
+		long prgStartTime = System.currentTimeMillis();
+		
+		
 		String inputQuestion = ques;
 		Util.writeToLog(Level.INFO, "The question is: "+inputQuestion);
 		System.out.println("The question is: "+inputQuestion);
@@ -23,6 +25,12 @@ public class Nlpart {
 		
 		// This will generate the various sparql queries by parsing the question and put it inside the query bucket 
 		answerGenerator.generateQueries(inputQuestion,choice);
+		
+		long prgEndTime = System.currentTimeMillis();
+		
+		Util.writeToLog(Level.INFO, "Total time taken : "
+						+ (prgEndTime - prgStartTime) / 1000
+						+ " seconds");
 		Util.closeLogFile();
 	}
 

@@ -54,7 +54,7 @@ public class Util extends Exception {
 
 	
 	public static int calculateLevenshteinDistance(String s, String t) {
-
+		t=t.toLowerCase();
 		int m = s.length();
 		int n = t.length();
 		int[][] d = new int[m + 1][n + 1];
