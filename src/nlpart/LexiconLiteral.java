@@ -41,29 +41,23 @@ public class LexiconLiteral implements Comparable<LexiconLiteral>
 				+ "\nliteralLabel => " + label + "\nQuestionmatch => " + QuestionMatch + "\nType of owner =>"
 				+ typeOfOwner + "\n=====================");
 	}
+
 	public int compareTo(LexiconLiteral lexlit) {
-		 
-		int score2 = ((LexiconLiteral) lexlit).score; 
- 
-		//ascending order
-		return this.score- score2;
- 
-		//descending order
-		//return compareQuantity - this.quantity;
- 
+		int score2 = ((LexiconLiteral) lexlit).score;
+		// ascending order
+		return this.score - score2;
+		// descending order
+		// return compareQuantity - this.quantity;
+
 	}
 
 	public static Comparator<LexiconLiteral> scoreComparator = new Comparator<LexiconLiteral>() {
 
 		public int compare(LexiconLiteral lexlit1, LexiconLiteral lexlit2) {
-
-			
 			int score1 = lexlit1.score;
 			int score2 = lexlit2.score;
 			// ascending order
 			return lexlit1.compareTo(lexlit2);
-
-		
 		}
 
 	};

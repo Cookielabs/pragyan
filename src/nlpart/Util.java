@@ -29,6 +29,11 @@ public class Util extends Exception {
 		
 	}
 	
+	public static String getPartURI(String URI){
+		String nameToSend = URI.substring(URI.lastIndexOf('/')+1, URI.length());
+		return nameToSend;
+	}
+	
 	public static void closeLogFile() {
 		fileHandle.close();
 	}
@@ -40,67 +45,14 @@ public class Util extends Exception {
 		String inputFromFile;
 		String questionType;
 
-		// BufferedReader reader;
+		
 		questionAndType.add(question);
 		questionAndType.add("normal");
 
-		// This shit needs to be reviewed.Writing the regex in the file and
-		// retrieving it is a PITA.So, I'm commenting all the below section
-
-		/*
-		 * Boolean cleanQuestion = false; BufferedReader reader = new
-		 * BufferedReader(new FileReader("QuestionType.txt")); inputFromFile =
-		 * reader.readLine();
-		 * 
-		 * 
-		 * 
-		 * while ((inputFromFile != null)) { /* this will force a file format
-		 * where: 1)regex of question start with '^' which is a regex reserved
-		 * character means "the beginning of a string" 2)line starts with small
-		 * english letters [a-z] only and this represent the type of the
-		 * question It will allow comment lines (not blocks) in the file that
-		 * will start with any character except '^' or [a-z] Better to write
-		 * "//" as the comment line sign as its the common adopted style for
-		 * writting comments
-		 * 
-		 * String regex = "^@[a-zA-Z]+"; System.out.print("Regex is:"+ regex);
-		 * while (inputFromFile.matches(regex)){ inputFromFile =
-		 * reader.readLine(); allQuestionTypeList.add(inputFromFile);
-		 * inputFromFile = reader.readLine(); } } for (String string :
-		 * allQuestionTypeList) { System.out.println(string); }
-		 * 
-		 * while (!cleanQuestion) { cleanQuestion = true; //flag to tell if all
-		 * the questions kewords are consumed
-		 * 
-		 * for (int i = 0; i < allQuestionTypeList.size() ; i++) {
-		 * if(question.matches(allQuestionTypeList.get(i))) {
-		 * 
-		 * System.out.print("Regex matched"); question =
-		 * question.replaceAll(allQuestionTypeList.get(i), ""); //question =
-		 * Regex.Replace(question, questionTypeList[i], "");
-		 * 
-		 * question = question.trim();
-		 * 
-		 * questionAndType.set(0, question);
-		 * 
-		 * questionAndType.set(1, allQuestionTypeList.get(++i));
-		 * //questionAndType.get(1)= questionTypeList[++i];
-		 * 
-		 * cleanQuestion = false;
-		 * 
-		 * break; } else i++; }
-		 * 
-		 * }
-		 * 
-		 * System.out.println("The size of Question and Type is: "+
-		 * questionAndType.size()); //return questionAndType; // This shit is
-		 * not working.So I'm just returning "normal" question type along with
-		 * the question itself
-		 */
-		return questionAndType;
+				return questionAndType;
 	}
 
-	/* This whole algorithm implementation is attaya pottufied :P */
+	
 	public static int calculateLevenshteinDistance(String s, String t) {
 
 		int m = s.length();

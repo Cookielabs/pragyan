@@ -1,0 +1,9 @@
+select distinct ?subject ?literal ?redirects ?typeOfOwner ?redirectsTypeOfOwner where{
+                                    ?subject <http://www.w3.org/2000/01/rdf-schema#label> ?literal.
+                                    optional { ?subject <http://dbpedia.org/ontology/wikiPageRedirects> ?redirects . 
+                                    optional {?redirects <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?redirectsTypeOfOwner .
+                                    }}.
+                                    optional {?subject <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?typeOfOwner}.
+                                    Filter ( !bound(?typeOfOwner) || 
+                                    ( (?typeOfOwner = <http://dbpedia.org/ontology/Place>))).
+                                    ?literal bif:contains '" abdul kalam"'.} limit  30;
