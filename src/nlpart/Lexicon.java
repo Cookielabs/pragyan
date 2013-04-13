@@ -36,6 +36,8 @@ public class Lexicon
 		literalFilled = false;
 	}
 
+	
+	//THIS FUNCTION IS OBSOLETE, getPericatesForThese(Literals) is the correct working function
 	public List<LexiconPredicate> getPredicates(String question, int limit, int topN) throws Exception
 	{
 
