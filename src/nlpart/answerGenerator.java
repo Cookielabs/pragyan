@@ -119,14 +119,28 @@ public class answerGenerator
 		{
 			for (LexiconPredicate lexiconPredicate : predicateList)
 			{
-				query = "Select * where {<"
+				if(lexiconPredicate.URI.contains("abstract"))
+				{
+					query = "Select * where {<"
+							+ lexiconLiteral.URI
+							+ "> <"
+							+ lexiconPredicate.URI
+							+ "> ?x. "
+							
+							+ " FILTER ( lang(?x) = 'en' )}";
+					 queries.add(query);					
+				}
+				else
+				{
+				 query = "Select * where {<"
 						+ lexiconLiteral.URI
 						+ "> <"
 						+ lexiconPredicate.URI
 						+ "> ?x. "
 						
 						+ "OPTIONAL { ?x <http://www.w3.org/2000/01/rdf-schema#label> ?label FILTER ( lang(?label) = 'en' )}}";
-				queries.add(query);
+				 queries.add(query);
+				}
 			}
 		}
 
