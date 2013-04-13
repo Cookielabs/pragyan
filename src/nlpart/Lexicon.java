@@ -371,6 +371,8 @@ public class Lexicon
 					QuerySolution qsolution = literalResults.nextSolution();
 					RDFNode predicateURI = qsolution.get("predicate");
 					RDFNode predicateLabel = qsolution.get("label");
+					
+					
 					LexiconPredicate tmpPredicate = new LexiconPredicate(predicateURI.toString(),
 							predicateLabel.toString());
 					for (LexiconPredicate lexiconPredicate : predicateList)
@@ -392,6 +394,17 @@ public class Lexicon
 					}
 					if ( !exists )
 					{
+						//Sanitizing the labels
+						if ( tmpPredicate.label.matches(".*@.*") || tmpPredicate.label.matches("\\(.*\\)") )
+						{
+							tmpPredicate.label = tmpPredicate.label.substring(0, tmpPredicate.label.length() - 3);
+							if ( tmpPredicate.label.matches("\\(.*\\)") )
+							{
+								tmpPredicate.label = tmpPredicate.label.replace("\\(.*\\)", " ");
+								tmpPredicate.label = tmpPredicate.label.replace("  ", " ");
+								tmpPredicate.label = tmpPredicate.label.trim();
+							}
+						}
 						predicateList.add(tmpPredicate);
 					}
 
