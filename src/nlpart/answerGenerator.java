@@ -21,6 +21,7 @@ public class answerGenerator
 	private int questionType;
 	private Lexicon lexicon;
 	public int choice;
+	private String tmplog;
 
 	public answerGenerator() {
 		lexicon = new Lexicon();
@@ -30,8 +31,8 @@ public class answerGenerator
 
 		this.question = question.toLowerCase();
 		this.choice = choice;
-		String tmplog = "";
-	
+		
+		tmplog = "";
 
 		sanitizeQuery();
 	
@@ -96,15 +97,22 @@ public class answerGenerator
 		
 		List<LexiconLiteral> literalList = lexicon.getLiterals(parsedQuestion, 50, 5, choice);
 		List<LexiconPredicate> predicateList = lexicon.getPredicatesForThese(literalList, parsedQuestion);
-		for (LexiconPredicate lexPredicate : predicateList)
-		{
-			System.out.println("Predicate is : " + lexPredicate.URI);
-		}
+		
 		
 		if(predicateList.isEmpty()){
 			LexiconPredicate tmpPredicate = new LexiconPredicate("http://dbpedia.org/ontology/abstract", "abstract");
 			predicateList.add(tmpPredicate);
 		}
+		
+		tmplog="";
+		for (LexiconPredicate lexPredicate : predicateList)
+		{
+			System.out.println("Predicate is : " + lexPredicate.URI);
+			tmplog+=lexPredicate.URI+"\r\n";
+		}
+		
+		Util.writeToLog(Level.INFO, "Predicates are : \r\n"+tmplog);
+		
 		String query = "";
 		for (LexiconPredicate lexiconPredicate : predicateList)
 		{

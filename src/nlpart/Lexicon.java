@@ -26,6 +26,7 @@ public class Lexicon
 	private Boolean predicateFilled;
 	private Boolean literalFilled;
 	private String tmplog;
+	private List<String> permutationList;
 
 	public Lexicon()
 	{
@@ -42,8 +43,11 @@ public class Lexicon
 		long startTime = System.currentTimeMillis();
 
 		List<LexiconPredicate> interPredicateList = new ArrayList<LexiconPredicate>();
-		List<String> permutationList = getPermutations(question);
-
+		
+		/*
+		permutationList is already found in getLiterals() function
+		permutationList = getPermutations(question);
+		
 		tmplog = "";
 		for (String string : permutationList)
 		{
@@ -52,8 +56,8 @@ public class Lexicon
 		}
 
 		Util.writeToLog(Level.INFO, "List of all permutations" + "\r\n" + tmplog);
-		tmplog = "";
-
+		*/
+		
 		String bifContainsValue = "";
 		for (String permutation : permutationList)
 		{
@@ -186,13 +190,10 @@ public class Lexicon
 		long startTime = System.currentTimeMillis();
 
 		List<LexiconLiteral> interLiteralList = new ArrayList<LexiconLiteral>();
-		List<String> permutationList = new ArrayList<String>();
+		permutationList = new ArrayList<String>();
 		permutationList = getPermutations(question);
 
-		for (String permutations : permutationList)
-		{
-
-		}
+		
 		if ( literalFilled )
 		{
 			for (LexiconLiteral literal : this.literalList)
@@ -205,6 +206,7 @@ public class Lexicon
 
 			return interLiteralList;
 		}
+		
 		else
 		{
 			String bifContainsValue = "";
@@ -300,10 +302,12 @@ public class Lexicon
 			for (LexiconLiteral lexiconLiteral : literalList)
 			{
 				System.out.println("Literal: " + lexiconLiteral.URI + " SCore: " + lexiconLiteral.score);
-				// tmplog += lexiconLiteral.URI + "  permutation:" +
-				// lexiconLiteral.QuestionMatch + "  label:"
-				// + lexiconLiteral.label + "  Score=> " + lexiconLiteral.score
-				// + "\r\n";
+				
+			 // Adding the literals w/ levenshtein score to the log file.
+				tmplog += lexiconLiteral.URI + "  permutation:" +
+				lexiconLiteral.QuestionMatch + "  label:"
+				+ lexiconLiteral.label + "  Score=> " + lexiconLiteral.score
+				+ "\r\n";
 			}
 
 			Util.writeToLog(Level.INFO, "Literals with Levenshtein Score \r\n" + tmplog);
@@ -368,18 +372,28 @@ public class Lexicon
 				System.out.println("Houston, we have a problem: " + e.getMessage());
 			}
 		}
+		tmplog="";
 		for (LexiconPredicate lexiconPredicate : predicateList)
 		{
-			System.out.println("URi: " + lexiconPredicate.URI + "  Label: " + lexiconPredicate.label);
+			System.out.println("URI: " + lexiconPredicate.URI + "  Label: " + lexiconPredicate.label);
+			
+			//adding the list of predicates to the log file
+			tmplog+="URI: " + lexiconPredicate.URI + "  Label: " + lexiconPredicate.label+"\r\n";
 		}
+		
+		Util.writeToLog(Level.INFO, "List of predicates :\r\n"+tmplog);
 		// Need to Remove the Duplicates.
 		List<LexiconPredicate> predicatesAfterScoring =  new ArrayList<LexiconPredicate>();
 		predicatesAfterScoring = scoreThesePredicates(predicateList, question);
 		
+		tmplog="";
 		for (LexiconPredicate lexiconPredicate : predicatesAfterScoring)
 		{
 			System.out.println("URi: " + lexiconPredicate.URI + "  Label: " + lexiconPredicate.label);
+			tmplog+="URI: " + lexiconPredicate.URI + "  Label: " + lexiconPredicate.label+"\r\n";;
 		}
+		
+		Util.writeToLog(Level.INFO, "List of predicates that matches w/ permutation :\r\n"+tmplog);
 		return predicatesAfterScoring;
 
 	}
@@ -388,7 +402,12 @@ public class Lexicon
 			throws Exception
 	{
 		List<LexiconPredicate> predicateListToSend = new ArrayList<LexiconPredicate>();
-		List<String> permutationList = getPermutations(question);
+		
+		//permutationList is already found in getLiterals() function
+		//permutationList = getPermutations(question);
+		
+		tmplog="";
+		
 		for (LexiconPredicate lexiconPredicate : results)
 		{
 			Boolean itContains = false;
@@ -397,6 +416,7 @@ public class Lexicon
 				if ( lexiconPredicate.URI.contains(string) )
 				{
 					System.out.println("Contains: " + lexiconPredicate.URI + " permutation: " + string);
+					tmplog+="Contains: " + lexiconPredicate.URI + "   Permutation: " + string+"\r\n";
 					itContains = true;
 
 				}
@@ -407,6 +427,7 @@ public class Lexicon
 			}
 
 		}
+		Util.writeToLog(Level.INFO, "List of Predicates that match w/ Permutation: \r\n"+tmplog);
 		return predicateListToSend;
 	}
 
@@ -595,7 +616,7 @@ public class Lexicon
 
 	public List<String> getPermutations(String question) throws Exception
 	{
-		Util.writeToLog(Level.INFO, "getting all the Permutations of the sanitized question");
+		
 		Set<String> permutationList = new LinkedHashSet<>();
 
 		question = question.replaceAll("\\s*who\\s*", " ");
@@ -619,6 +640,8 @@ public class Lexicon
 		question = question.replaceAll("  ", " "); // Replacing all 2 spaces
 		// with 1 space
 		question = question.trim();
+		
+		Util.writeToLog(Level.INFO, "Question after removing the stop words: "+question);
 
 		List<String> splitQuestion = new ArrayList<String>();
 		splitQuestion = Arrays.asList(question.split(" "));
@@ -644,7 +667,17 @@ public class Lexicon
 		}
 		permutationList.add(question.trim());
 		permutationList.add(questionNoSpace.trim());
+		
+		tmplog = "";
+		
+		for (String string : permutationList)
+		{
 
+			tmplog += string + "\r\n";
+		}
+		
+		Util.writeToLog(Level.INFO, "List of all permutations" + "\r\n" + tmplog);
+		
 		List<String> returningPermutationList = new ArrayList<String>();
 		returningPermutationList.addAll(permutationList);
 		return returningPermutationList;
