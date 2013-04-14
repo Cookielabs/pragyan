@@ -105,7 +105,7 @@ def askPage(request):
 	print "Formatting..."
         formatter = Formatter( selector )
         formatter.format()
-	data = "<html>\n<head><link rel='stylesheet' type='text/css' href='style.css'></head>\n<body>\n"
+	data = "<html>\n<head><link rel='stylesheet' type='text/css' href='/static/style.css'></head>\n<body>\n"
         for resource in formatter.result:
                 data += resource.render()
         data += "</body>\n</html>"
