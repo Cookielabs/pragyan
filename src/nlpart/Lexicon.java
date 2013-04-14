@@ -260,7 +260,7 @@ public class Lexicon
 						for (LexiconLiteral x : interLiteralList)
 						{
 
-							if ( x.URI == literalURI.toString() && x.QuestionMatch == resultQuestionMatch )
+							if ( x.URI.equals(literalURI.toString()) && x.QuestionMatch.equals(resultQuestionMatch))
 							{
 								exists = true;
 								break;
@@ -712,7 +712,7 @@ public class Lexicon
 			}
 		}
 		permutationList.add(question.trim());
-		permutationList.add(questionNoSpace.trim());
+		//permutationList.add(questionNoSpace.trim());
 		
 		tmplog = "";
 		
