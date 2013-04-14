@@ -1,0 +1,3 @@
+[submodule "frontend/panorama"]
+	path = frontend/panorama
+	url = https://github.com/Cookielabs/panorama.git
