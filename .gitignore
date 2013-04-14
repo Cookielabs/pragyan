@@ -1,4 +1,6 @@
 *.log
 *.pot
 *.pyc
+*.classpath
+*.project
 local_settings.py
