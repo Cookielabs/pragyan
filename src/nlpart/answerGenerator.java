@@ -38,7 +38,7 @@ public class answerGenerator
 	
 		Util.writeToLog(Level.INFO, "Sanitized question: " + parsedQuestion);
 		Util.writeToLog(Level.INFO, "Choice of question : " + choice);
-		HashSet<String> queries = buildQueries();
+		LinkedHashSet<String> queries = buildQueries();
 		System.out
 				.println("\n\n\n\n\n********************The answer to the Life, Universe and Everything :***************************** ");
 		tmplog = "";
@@ -89,11 +89,11 @@ public class answerGenerator
 	}
 
 
-	public HashSet<String> buildQueries() throws Exception {
+	public LinkedHashSet<String> buildQueries() throws Exception {
 
 
 		List<String> questionAndType = Util.getQuestionType(parsedQuestion);
-		HashSet<String> queries = new HashSet<String>();
+		LinkedHashSet<String> queries = new LinkedHashSet<String>();
 
 		
 		List<LexiconLiteral> literalList = lexicon.getLiterals(parsedQuestion, 50, 5, choice);
