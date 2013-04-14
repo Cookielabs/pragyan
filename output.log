@@ -5,122 +5,115 @@ Choose a type of query:
 3. Movies
 
 Choice: 
-The question is: Who is Jaggi Vasudev
+The question is: Who are the children of Bill gates
 Querying.. Please wait..
-select distinct ?subject ?literal ?redirects ?typeOfOwner ?redirectsTypeOfOwner where {?subject <http://www.w3.org/2000/01/rdf-schema#label> ?literal .?subject <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?typeOfOwner .optional { ?subject <http://dbpedia.org/ontology/wikiPageRedirects> ?redirects .optional {?redirects <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?redirectsTypeOfOwner .}} Filter ( !bound(?typeOfOwner) || ( (?typeOfOwner = <http://dbpedia.org/ontology/Person>))) . ?literal <bif:contains> '"jaggi"'. } limit 50
+select distinct ?subject ?literal ?redirects ?typeOfOwner ?redirectsTypeOfOwner where {?subject <http://www.w3.org/2000/01/rdf-schema#label> ?literal .?subject <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?typeOfOwner .optional { ?subject <http://dbpedia.org/ontology/wikiPageRedirects> ?redirects .optional {?redirects <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?redirectsTypeOfOwner .}} Filter ( !bound(?typeOfOwner) || ( (?typeOfOwner = <http://dbpedia.org/ontology/Person>))) . ?literal <bif:contains> '"children"'. } limit 50
 log4j:WARN No appenders could be found for logger (com.hp.hpl.jena.sparql.mgt.ARQMgt).
 log4j:WARN Please initialize the log4j system properly.
 log4j:WARN See http://logging.apache.org/log4j/1.2/faq.html#noconfig for more info.
-select distinct ?subject ?literal ?redirects ?typeOfOwner ?redirectsTypeOfOwner where {?subject <http://www.w3.org/2000/01/rdf-schema#label> ?literal .?subject <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?typeOfOwner .optional { ?subject <http://dbpedia.org/ontology/wikiPageRedirects> ?redirects .optional {?redirects <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?redirectsTypeOfOwner .}} Filter ( !bound(?typeOfOwner) || ( (?typeOfOwner = <http://dbpedia.org/ontology/Person>))) . ?literal <bif:contains> '"vasudev"'. } limit 50
-select distinct ?subject ?literal ?redirects ?typeOfOwner ?redirectsTypeOfOwner where {?subject <http://www.w3.org/2000/01/rdf-schema#label> ?literal .?subject <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?typeOfOwner .optional { ?subject <http://dbpedia.org/ontology/wikiPageRedirects> ?redirects .optional {?redirects <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?redirectsTypeOfOwner .}} Filter ( !bound(?typeOfOwner) || ( (?typeOfOwner = <http://dbpedia.org/ontology/Person>))) . ?literal <bif:contains> '"jaggi vasudev"'. } limit 50
-select distinct ?subject ?literal ?redirects ?typeOfOwner ?redirectsTypeOfOwner where {?subject <http://www.w3.org/2000/01/rdf-schema#label> ?literal .?subject <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?typeOfOwner .optional { ?subject <http://dbpedia.org/ontology/wikiPageRedirects> ?redirects .optional {?redirects <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?redirectsTypeOfOwner .}} Filter ( !bound(?typeOfOwner) || ( (?typeOfOwner = <http://dbpedia.org/ontology/Person>))) . ?literal <bif:contains> '"jaggivasudev"'. } limit 50
-The total time taken to get the Literals is : 5 seconds
-Literal: http://dbpedia.org/resource/Jaggi_Vasudev SCore: 2
-Literal: http://dbpedia.org/resource/Steve_Jaggi SCore: 7
-Literal: http://dbpedia.org/resource/Marco_Jaggi SCore: 7
-Literal: http://dbpedia.org/resource/Jaggi_Vasudev SCore: 7
-Literal: http://dbpedia.org/resource/Jaggi_Vasudev SCore: 9
-URi: http://dbpedia.org/ontology/birthPlace  Label: birth place@en
-URi: http://dbpedia.org/ontology/birthDate  Label: birth date@en
-URi: http://dbpedia.org/ontology/wikiPageExternalLink  Label: Link from a Wikipage to an external page@en
-URi: http://dbpedia.org/property/birthPlace  Label: birth place@en
-URi: http://dbpedia.org/property/name  Label: name@en
-URi: http://dbpedia.org/property/dateOfBirth  Label: DATE OF BIRTH@en
-URi: http://dbpedia.org/ontology/abstract  Label: has abstract@en
-URi: http://dbpedia.org/property/shortDescription  Label: SHORT DESCRIPTION@en
-URi: http://dbpedia.org/property/placeOfBirth  Label: PLACE OF BIRTH@en
-URi: http://dbpedia.org/property/lccn  Label: LCCN@en
-URi: http://dbpedia.org/property/viaf  Label: VIAF@en
-URi: http://dbpedia.org/property/nationality  Label: nationality@en
-URi: http://dbpedia.org/property/age  Label: Age@en
-URi: http://dbpedia.org/ontology/thumbnail  Label: thumbnail@en
-URi: http://dbpedia.org/property/birthDate  Label: birth date@en
-URi: http://dbpedia.org/property/imageSize  Label: image size@en
-URi: http://dbpedia.org/property/occupation  Label: occupation@en
-URi: http://dbpedia.org/ontology/birthYear  Label: birth year@en
-URi: http://dbpedia.org/ontology/occupation  Label: occupation@en
-URi: http://dbpedia.org/property/yearsActive  Label: years active@en
-URi: http://dbpedia.org/ontology/activeYearsStartYear  Label: active years start year@en
-URi: http://dbpedia.org/property/caption  Label: caption@en
-URi: http://dbpedia.org/property/website  Label: website@en
-URi: http://dbpedia.org/property/trainer  Label: trainer@en
-URi: http://dbpedia.org/property/resides  Label: resides@en
-URi: http://dbpedia.org/property/billed  Label: billed@en
-URi: http://dbpedia.org/property/alternativeNames  Label: ALTERNATIVE NAMES@en
-URi: http://dbpedia.org/property/names  Label: names@en
-URi: http://dbpedia.org/property/debut  Label: debut@en
-URi: http://dbpedia.org/ontology/residence  Label: residence@en
-URi: http://dbpedia.org/ontology/weight  Label: weight (g)@en
-URi: http://dbpedia.org/ontology/trainer  Label: trainer@en
-URi: http://dbpedia.org/ontology/billed  Label: billed@en
-URi: http://dbpedia.org/ontology/Person/weight  Label: weight (kg)@en
+select distinct ?subject ?literal ?redirects ?typeOfOwner ?redirectsTypeOfOwner where {?subject <http://www.w3.org/2000/01/rdf-schema#label> ?literal .?subject <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?typeOfOwner .optional { ?subject <http://dbpedia.org/ontology/wikiPageRedirects> ?redirects .optional {?redirects <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?redirectsTypeOfOwner .}} Filter ( !bound(?typeOfOwner) || ( (?typeOfOwner = <http://dbpedia.org/ontology/Person>))) . ?literal <bif:contains> '"bill"'. } limit 50
+select distinct ?subject ?literal ?redirects ?typeOfOwner ?redirectsTypeOfOwner where {?subject <http://www.w3.org/2000/01/rdf-schema#label> ?literal .?subject <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?typeOfOwner .optional { ?subject <http://dbpedia.org/ontology/wikiPageRedirects> ?redirects .optional {?redirects <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?redirectsTypeOfOwner .}} Filter ( !bound(?typeOfOwner) || ( (?typeOfOwner = <http://dbpedia.org/ontology/Person>))) . ?literal <bif:contains> '"gates"'. } limit 50
+select distinct ?subject ?literal ?redirects ?typeOfOwner ?redirectsTypeOfOwner where {?subject <http://www.w3.org/2000/01/rdf-schema#label> ?literal .?subject <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?typeOfOwner .optional { ?subject <http://dbpedia.org/ontology/wikiPageRedirects> ?redirects .optional {?redirects <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?redirectsTypeOfOwner .}} Filter ( !bound(?typeOfOwner) || ( (?typeOfOwner = <http://dbpedia.org/ontology/Person>))) . ?literal <bif:contains> '"children bill"'. } limit 50
+select distinct ?subject ?literal ?redirects ?typeOfOwner ?redirectsTypeOfOwner where {?subject <http://www.w3.org/2000/01/rdf-schema#label> ?literal .?subject <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?typeOfOwner .optional { ?subject <http://dbpedia.org/ontology/wikiPageRedirects> ?redirects .optional {?redirects <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?redirectsTypeOfOwner .}} Filter ( !bound(?typeOfOwner) || ( (?typeOfOwner = <http://dbpedia.org/ontology/Person>))) . ?literal <bif:contains> '"bill gates"'. } limit 50
+select distinct ?subject ?literal ?redirects ?typeOfOwner ?redirectsTypeOfOwner where {?subject <http://www.w3.org/2000/01/rdf-schema#label> ?literal .?subject <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?typeOfOwner .optional { ?subject <http://dbpedia.org/ontology/wikiPageRedirects> ?redirects .optional {?redirects <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?redirectsTypeOfOwner .}} Filter ( !bound(?typeOfOwner) || ( (?typeOfOwner = <http://dbpedia.org/ontology/Person>))) . ?literal <bif:contains> '"children bill gates"'. } limit 50
+select distinct ?subject ?literal ?redirects ?typeOfOwner ?redirectsTypeOfOwner where {?subject <http://www.w3.org/2000/01/rdf-schema#label> ?literal .?subject <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?typeOfOwner .optional { ?subject <http://dbpedia.org/ontology/wikiPageRedirects> ?redirects .optional {?redirects <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?redirectsTypeOfOwner .}} Filter ( !bound(?typeOfOwner) || ( (?typeOfOwner = <http://dbpedia.org/ontology/Person>))) . ?literal <bif:contains> '"childrenbillgates"'. } limit 50
+The total time taken to get the Literals is : 10 seconds
+Literal: http://dbpedia.org/resource/Bill_Gates SCore: 0
+Literal: http://dbpedia.org/resource/Bill_Joy SCore: 4
+Literal: http://dbpedia.org/resource/Bill_Moss_(racing_driver) SCore: 5
+Literal: http://dbpedia.org/resource/Bill_Ward_(musician) SCore: 5
+Literal: http://dbpedia.org/resource/Bill_Gates SCore: 5
+URI: http://dbpedia.org/ontology/birthPlace  Label: birth place
+URI: http://dbpedia.org/ontology/birthDate  Label: birth date
+URI: http://dbpedia.org/ontology/wikiPageExternalLink  Label: Link from a Wikipage to an external page
+URI: http://dbpedia.org/property/birthPlace  Label: birth place
+URI: http://dbpedia.org/property/name  Label: name
+URI: http://dbpedia.org/property/caption  Label: caption
+URI: http://dbpedia.org/property/dateOfBirth  Label: DATE OF BIRTH
+URI: http://dbpedia.org/property/parents  Label: parents
+URI: http://dbpedia.org/ontology/abstract  Label: has abstract
+URI: http://dbpedia.org/ontology/individualisedPnd  Label: individualised PND number
+URI: http://dbpedia.org/property/shortDescription  Label: SHORT DESCRIPTION
+URI: http://dbpedia.org/property/placeOfBirth  Label: PLACE OF BIRTH
+URI: http://dbpedia.org/property/spouse  Label: spouse
+URI: http://dbpedia.org/property/children  Label: children
+URI: http://dbpedia.org/property/religion  Label: religion
+URI: http://dbpedia.org/property/signatureAlt  Label: signature alt
+URI: http://dbpedia.org/property/yearsActive  Label: years active
+URI: http://dbpedia.org/property/before  Label: before
+URI: http://dbpedia.org/property/boards  Label: boards
+URI: http://dbpedia.org/property/alt  Label: Alt
+URI: http://dbpedia.org/property/nationality  Label: nationality
+URI: http://dbpedia.org/ontology/thumbnail  Label: thumbnail
+URI: http://dbpedia.org/property/netWorth  Label: net worth
+URI: http://dbpedia.org/property/birthDate  Label: birth date
+URI: http://dbpedia.org/property/alternativeNames  Label: ALTERNATIVE NAMES
+URI: http://dbpedia.org/property/signature  Label: signature
+URI: http://dbpedia.org/property/almaMater  Label: alma mater
+URI: http://dbpedia.org/property/birthName  Label: birth name
+URI: http://dbpedia.org/property/occupation  Label: occupation
+URI: http://dbpedia.org/property/residence  Label: residence
+URI: http://dbpedia.org/property/after  Label: after
+URI: http://dbpedia.org/ontology/board  Label: board
+URI: http://dbpedia.org/ontology/nationality  Label: nationality
+URI: http://dbpedia.org/ontology/activeYearsStartYear  Label: active years start year
+URI: http://dbpedia.org/ontology/stateOfOrigin  Label: state of origin
+URI: http://dbpedia.org/ontology/birthYear  Label: birth year
+URI: http://dbpedia.org/ontology/almaMater  Label: alma mater
+URI: http://dbpedia.org/ontology/occupation  Label: occupation
+URI: http://dbpedia.org/ontology/birthName  Label: birth name
+URI: http://dbpedia.org/ontology/residence  Label: residence
+URI: http://dbpedia.org/ontology/spouse  Label: spouse
+URI: http://dbpedia.org/ontology/religion  Label: religion
+URI: http://dbpedia.org/ontology/parent  Label: parent
+URI: http://dbpedia.org/property/knownFor  Label: known for
+URI: http://dbpedia.org/property/ethnicity  Label: ethnicity
+URI: http://dbpedia.org/ontology/knownFor  Label: known for
+URI: http://dbpedia.org/ontology/deathDate  Label: death date
+URI: http://dbpedia.org/property/dateOfDeath  Label: DATE OF DEATH
+URI: http://dbpedia.org/property/podiums  Label: Podiums
+URI: http://dbpedia.org/property/championships  Label: championships
+URI: http://dbpedia.org/property/wins  Label: Wins
+URI: http://dbpedia.org/property/fastestLaps  Label: Fastest laps
+URI: http://dbpedia.org/property/points  Label: points
+URI: http://dbpedia.org/property/lastRace  Label: Last race
+URI: http://dbpedia.org/property/races  Label: Races
+URI: http://dbpedia.org/property/poles  Label: Poles
+URI: http://dbpedia.org/property/firstRace  Label: First race
+URI: http://dbpedia.org/ontology/races  Label: races
+URI: http://dbpedia.org/ontology/wins  Label: wins
+URI: http://dbpedia.org/ontology/poles  Label: poles
+URI: http://dbpedia.org/ontology/championships  Label: championships
+URI: http://dbpedia.org/ontology/fastestLap  Label: fastest lap
+URI: http://dbpedia.org/ontology/firstRace  Label: first race
+URI: http://dbpedia.org/ontology/podiums  Label: podiums
+URI: http://dbpedia.org/ontology/lastRace  Label: last race
+URI: http://dbpedia.org/property/associatedActs  Label: associated acts
+URI: http://dbpedia.org/property/genre  Label: genre
+URI: http://dbpedia.org/property/imageSize  Label: image size
+URI: http://dbpedia.org/property/background  Label: background
+URI: http://dbpedia.org/property/label  Label: label
+URI: http://dbpedia.org/property/instrument  Label: instrument
+URI: http://dbpedia.org/ontology/genre  Label: genre
+URI: http://dbpedia.org/ontology/recordLabel  Label: record label
+URI: http://dbpedia.org/ontology/background  Label: background
+URI: http://dbpedia.org/ontology/instrument  Label: instrument
+URI: http://dbpedia.org/ontology/associatedBand  Label: associated band
+URI: http://dbpedia.org/ontology/associatedMusicalArtist  Label: associated musical artist
+Contains: http://dbpedia.org/property/children permutation: children
+URi: http://dbpedia.org/property/children  Label: children
+Predicate is : http://dbpedia.org/property/children
 
 
 
 
 
 ********************The answer to the Life, Universe and Everything :***************************** 
-The query is: Select * where {<http://dbpedia.org/resource/Jaggi_Vasudev> <http://dbpedia.org/ontology/abstract> ?x . OPTIONAL { ?x <http://www.w3.org/2000/01/rdf-schema#label> ?label FILTER ( lang(?x) = 'en' )}}
+The query is: Select * where {<http://dbpedia.org/resource/Bill_Gates> <http://dbpedia.org/property/children> ?x. OPTIONAL { ?x <http://www.w3.org/2000/01/rdf-schema#label> ?label FILTER ( lang(?label) = 'en' )}}
 
 **************************
 
-The answer is : Jaggi Vasudev (Kannada: ಸಧ್ಗುರು ಜಗ್ಗಿ ವಾಸುದೇವ್ Tamil: சத்குரு ஜக்கி வாசுதேவ் Hindi: सदगुरु जग्गी वासुदेव Telugu: సద్గురు జగ్గి వాసుదేవ్) also known as Sadhguru, is an Indian yogi and mystic. He founded the Isha Foundation, a non-profit organization which offers yoga programs around the world, including India, United States, England, Lebanon, Singapore, Canada, Malaysia, Uganda and Australia. The Foundation is also involved in various social and community development activities, which have resulted in the Foundation being granted special consultative status with the Economic and Social Council of the United Nations.@en
-
-**************************
-
-The query is: Select * where {<http://dbpedia.org/resource/Steve_Jaggi> <http://dbpedia.org/ontology/abstract> ?x . OPTIONAL { ?x <http://www.w3.org/2000/01/rdf-schema#label> ?label FILTER ( lang(?x) = 'en' )}}
-
-**************************
-
-The answer is : Steve Jaggi is a British / Canadian film director best known for the documentary And The Beat Goes On. He is also an accomplished producer, having developed and overseen several films including the Vampire Horror Temptation and the feature length Dance Documentary London Tango as well as the short lived British cable television series Be On TV. Steve almost exclusively works with Producing partner Lionel Hicks. Steve currently lives in London, England.@en
-
-**************************
-
-The query is: Select * where {<http://dbpedia.org/resource/Marco_Jaggi> <http://dbpedia.org/ontology/abstract> ?x . OPTIONAL { ?x <http://www.w3.org/2000/01/rdf-schema#label> ?label FILTER ( lang(?x) = 'en' )}}
-
-**************************
-
-The answer is : Marco Jaggi (born January 12, 1980) is a Swiss professional wrestler and wrestling trainer, known by his ring name Ares (or Are$), who primarily competes in European and American independent promotions. For much of his career, Jaggi teamed with Claudio Castagnoli and Marc Roudin as part of Swiss Money Holding. One of the top tag teams in Europe during the 2000s, the trio won titles in Germany, France, the United Kingdom and their native Switzerland. Under the Freebird Rule, Jaggi held the IPW:UK Tag Team Championship with Castagnoli and Roudin for a record 12 months. They eventually toured the United States in 2003, appearing for IWA Mid-South and Chikara, and took part in the 2003 Tag World Grand Prix. After returning to Europe, Castagnoli decided to return to the United States to regularly compete for Chikara. Jaggi then brought in Marc Roudin to fill in for Castagnoli and spent several years teaming together. He would also have an accomplished career as a singles competitor, wrestling in countries as far away Algeria, South Africa and Japan, and was the head trainer for IWA-Switzerland. After his marriage to Allison Danger in 2008, Jaggi followed Castagnoli to the United States. He made a surprise appearance at Chikara's “Three-Fisted Tales” show where he and Castagnoli reunited to form the "heel" stable BDK in 2009, and went on to win the 2010 King of Trios with fellow stablemate Tursas.@en
-
-**************************
-
-The query is: Select * where {<http://dbpedia.org/resource/Marco_Jaggi> <http://dbpedia.org/ontology/abstract> ?x . OPTIONAL { ?x <http://www.w3.org/2000/01/rdf-schema#label> ?label FILTER ( lang(?x) = 'en' )}}
-
-**************************
-
-The answer is : アーレス（ARES，1980年1月12日生）は、スイスチューリッヒ出身のプロレスラー。 1998年―おおよそ17歳の時にプロレスラーとしてのデビューを行い、やがてドイツのウエストサイド・エクストリーム・レスリングを主戦場とするようになった。 この団体ではヘビー級王座やタッグ王座を幾度も獲得。 2006年には日本のプロレスリング・ノアへの集中的な参戦を行い、その翌2007年にはイギリスのリバプールで開かれたキング・オブ・ヨーロッパ杯という名高いプロレス大会に出場。2008年にはIWAミッドサウスの大会に参加し、2010年からチカラの大会に参戦し始めるなど、欧州大陸を飛び出しての活動も見られるようになった。 スイスの大金持ちというギミックで、試合も袖無しのワイシャツにネクタイというコスチュームで行う。入場時にはジャケットを羽織り、アタッシュケースを提げて登場する。相手の技を受ける前にネクタイを締め直すムーブが特徴である。@ja
-
-**************************
-
-The query is: Select * where {<http://dbpedia.org/resource/Jaggi_Vasudev> <http://dbpedia.org/ontology/abstract> ?x . OPTIONAL { ?x <http://www.w3.org/2000/01/rdf-schema#label> ?label FILTER ( lang(?x) = 'en' )}}
-
-**************************
-
-The answer is : Jaggi Vasudev (Kannada: ಸಧ್ಗುರು ಜಗ್ಗಿ ವಾಸುದೇವ್ Tamil: சத்குரு ஜக்கி வாசுதேவ் Hindi: सदगुरु जग्गी वासुदेव Telugu: సద్గురు జగ్గి వాసుదేవ్) also known as Sadhguru, is an Indian yogi and mystic. He founded the Isha Foundation, a non-profit organization which offers yoga programs around the world, including India, United States, England, Lebanon, Singapore, Canada, Malaysia, Uganda and Australia. The Foundation is also involved in various social and community development activities, which have resulted in the Foundation being granted special consultative status with the Economic and Social Council of the United Nations.@en
-
-**************************
-
-The query is: Select * where {<http://dbpedia.org/resource/Jaggi_Vasudev> <http://dbpedia.org/ontology/abstract> ?x . OPTIONAL { ?x <http://www.w3.org/2000/01/rdf-schema#label> ?label FILTER ( lang(?x) = 'en' )}}
-
-**************************
-
-The answer is : Jaggi Vasudev also known as Sadhguru, is an Indian yogi and mystic. He founded the Isha Foundation, a non-profit organisation which offers yoga programs around the world, including India, United States, England, Lebanon, Singapore, Canada, Malaysia, Uganda and Australia. The Foundation is also involved in various social and community development activities, which have resulted in the Foundation being granted special consultative status with the Economic and Social Council of the United Nations.@en
-
-**************************
-
-The query is: Select * where {<http://dbpedia.org/resource/Jaggi_Vasudev> <http://dbpedia.org/ontology/abstract> ?x . OPTIONAL { ?x <http://www.w3.org/2000/01/rdf-schema#label> ?label FILTER ( lang(?x) = 'en' )}}
-
-**************************
-
-The answer is : Jaggi Vasudev (Kannada: ಸಧ್ಗುರು ಜಗ್ಗಿ ವಾಸುದೇವ್ Tamil: சத்குரு ஜக்கி வாசுதேவ் Hindi: सदगुरु जग्गी वासुदेव Telugu: సద్గురు జగ్గి వాసుదేవ్) also known as Sadhguru, is an Indian yogi and mystic. He founded the Isha Foundation, a non-profit organization which offers yoga programs around the world, including India, United States, England, Lebanon, Singapore, Canada, Malaysia, Uganda and Australia. The Foundation is also involved in various social and community development activities, which have resulted in the Foundation being granted special consultative status with the Economic and Social Council of the United Nations.@en
-
-**************************
-
-The query is: Select * where {<http://dbpedia.org/resource/Jaggi_Vasudev> <http://dbpedia.org/ontology/abstract> ?x . OPTIONAL { ?x <http://www.w3.org/2000/01/rdf-schema#label> ?label FILTER ( lang(?x) = 'en' )}}
-
-**************************
-
-The answer is : Jaggi Vasudev also known as Sadhguru, is an Indian yogi and mystic. He founded the Isha Foundation, a non-profit organisation which offers yoga programs around the world, including India, United States, England, Lebanon, Singapore, Canada, Malaysia, Uganda and Australia. The Foundation is also involved in various social and community development activities, which have resulted in the Foundation being granted special consultative status with the Economic and Social Council of the United Nations.@en
+The answer is : 3^^http://www.w3.org/2001/XMLSchema#int
 
 **************************
 

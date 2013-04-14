@@ -681,6 +681,7 @@ public class Lexicon
 		question = question.replaceAll("\\sis\\s*", " ");
 		question = question.replaceAll("\\s*give\\s*", " ");
 		question = question.replaceAll("\\sall\\s", " ");
+		question = question.replaceAll("\\sare\\s", " ");
 		question = question.replaceAll("\\sof\\s", " ");
 		question = question.replaceAll("  ", " "); // Replacing all 2 spaces
 		// with 1 space
@@ -705,7 +706,7 @@ public class Lexicon
 					wordNoSpace += splitQuestion.get(j2);
 				}
 				permutationList.add(wordSpace.trim());
-				permutationList.add(wordNoSpace.trim());
+				//permutationList.add(wordNoSpace.trim());
 				wordNoSpace = "";
 				wordSpace = "";
 			}
