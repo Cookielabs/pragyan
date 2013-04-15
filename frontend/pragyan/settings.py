@@ -3,7 +3,8 @@
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-HOME = '/home/prashanth/zion/frontend/'
+#HOME = '/home/prashanth/zion/frontend/'
+HOME = '/Learning/Project Pragyan/Source codes/pragyan/frontend/'
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
