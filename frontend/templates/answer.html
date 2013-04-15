@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+
+{% block body %}
+<div id="wrapper">
+	<div id="askBar">
+		<form method="post" action="ask">
+			<input type="text" name="question" value="{{ question }}" >
+			<input type="submit" value="Ask">
+		</form>
+	</div>
+	<div id="answer">
+		{{ answer }}
+	</div>
+</div>
+{% endblock %}
