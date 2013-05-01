@@ -1,4 +1,9 @@
+bin/
+.metadata/
+.settings/
+.project
 *.log
 *.pot
 *.pyc
+.DS_Store
 local_settings.py

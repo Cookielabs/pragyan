@@ -25,6 +25,8 @@ label
 	display: block;
 	color:black;
 	height:auto;
+	font-family: Verdana, Georgia;
+	font-size: 12px;
 }
 
 .thumbnail

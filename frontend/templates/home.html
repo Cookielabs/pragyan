@@ -1,11 +1,51 @@
 {% extends "base.html" %}
+{% block head %}
+
+<link href='http://fonts.googleapis.com/css?family=Dancing+Script' rel='stylesheet' type='text/css'>
+
+<style>
+#logo {
+    font-family: 'Dancing Script', cursive;
+    font-size: 130px;
+}
+
+#container
+{
+	text-align: center;
+	width: 100%;
+	margin-top: 200px;
+}
+
+.button, .button:visited {
+	background: #222 url(overlay.png) repeat-x; 
+	display: inline-block; 
+	color: #fff; 
+	text-decoration: none;
+	-moz-border-radius: 6px; 
+	-webkit-border-radius: 6px;
+	-moz-box-shadow: 0 1px 3px rgba(0,0,0,0.6);
+	-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.6);
+	text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
+	border-bottom: 1px solid rgba(0,0,0,0.25);
+	position: relative;
+	cursor: pointer;
+	font-size: 14px; 
+	padding: 6px 15px 6px;
+	background-color: #91bd09;
+}
+</style>
+
+{% endblock %}
 
 {% block body %}
+<div id="container">
+<div id="logo">Pragyan</div>
 <form action="ask/" method="post">
-	{% csrf_token %}
-	<input type="text" name="question">
-	<input type="submit" value="Ask">
-</form>
+		{% csrf_token %}
+		<input style="width:340px; height:28px;" type="text" name="question">
+		<input class="button" type="submit" value="Ask">	
+	</form>
+</div>
 {% endblock %}
 
 

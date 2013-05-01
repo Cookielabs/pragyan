@@ -1,4 +1,8 @@
 import SPARQLWrapper
+import logging
+import json
+import os
+
 from rdflib import URIRef, Literal, Graph #NOTE: RDF in rdflib and SPARQLWrapper gets conficts
 from panorama.Selector import *
 from panorama.Formatter import *
@@ -31,8 +35,9 @@ def extractSolutions( graph ):
 
         return solutions
 
-def extractUris( graph, solution_nodes ):
-	pass
+def extractUris( graph, json_file ):
+	f = open( json_file )
+	
 
 # Views Start Here
 
@@ -41,73 +46,53 @@ def home(request):
 
 def askPage(request):
 	
+	logging.basicConfig( filename="panorama.log", level=logging.DEBUG )
 	#TODO: from question get the SPARQL Query, integrate with backend
+	question = request.POST['question']
+	if question == '':
+		return redirect( home )
 
-	SPARQL = """PREFIX yago: <http://dbpedia.org/class/yago/>
-		    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-		    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-		    SELECT DISTINCT ?uri ?string
-		    WHERE {
-			?uri rdf:type yago:RussianCosmonauts .
-		        ?uri rdf:type yago:FemaleAstronauts .
-			OPTIONAL { ?uri rdfs:label ?string. FILTER (lang(?string) = 'en') }
-		  } """
-	
-	SPARQL1 = """PREFIX dbo: <http://dbpedia.org/ontology/>
-		     PREFIX res: <http://dbpedia.org/resource/>
-		     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-		     SELECT DISTINCT ?uri ?string 
-		     WHERE {       
-     			   res:Brooklyn_Bridge dbo:crosses ?uri . 
-      			   OPTIONAL { ?uri rdfs:label ?string. FILTER (lang(?string) = 'en') }
-		 }"""
-	print "SPARQL query...", SPARQL
+	#use the jar file
 
-	print "Querying endpoint..."
-	#Query the endpoint and get result
-	result_graph = queryEndpoint( SPARQL )
+	#read the json file
+	module_dir = os.path.dirname(__file__)
+	file_path = os.path.join(module_dir, 'output.json')
+	json_file = open( file_path )
+	data = json.load( json_file )
+	json_file.close()
 
-	print result_graph
-
-	print "Result..."
-	for term in result_graph:
-		print term
-
-	print "Extracting solution nodes from result..."
-	#Parse the resultset and get the URIs
-	uris = extractSolutions( result_graph )
-	
-	print "Solutions..."
-
-	for node in uris:
-		print node
+	#check for other result types
+	uris = []
+	for result in data["result-set"]:
+		if result["type"] == "uri":
+			uris.append( result["value"] )
 
 	#Using panorama
 	solution_graph = Graph()
-	print "Downloading resources..."
+	logging.info("Downloading resources:")
 	#TODO: check efficiency
 	for uri in uris:
-		print "for uri ", uri
+		logging.info("Downloading " + uri)
 		solution_graph.parse( uri )
 	
-	print "RDF Graph..."
+	logging.info("RDF Graph:")
 	for term in solution_graph:
-		print term
+		logging.debug(term)
 	
-        print "Creating Fresnel Graph.."
+        logging.info("Creating Fresnel Graph")
 	f = open('panorama/data/person_foaf.n3')
         fresnel_data = f.read()
         fresnel = Fresnel( fresnel_data )
 
-	print "Making selection.."
+	logging.info("Making selection")
         selector = Selector( fresnel , solution_graph)
         selector.select()
-	print "Formatting..."
+	logging.info("Formatting")
         formatter = Formatter( selector )
         formatter.format()
-	data = "<html>\n<head><link rel='stylesheet' type='text/css' href='/static/style.css'></head>\n<body>\n"
-        for resource in formatter.result:
+        data = ""
+	for resource in formatter.result:
                 data += resource.render()
-        data += "</body>\n</html>"
-	return HttpResponse( data )
+
+	return render_to_response( 'answer.html', {'result':data,'question':question, }, context_instance=RequestContext(request) )
 

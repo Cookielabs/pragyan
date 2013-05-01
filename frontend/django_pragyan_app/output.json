@@ -1,0 +1,16 @@
+{
+	"result-set": [
+	{
+	  "type": "uri",
+	  "value": "http://dbpedia.org/resource/A._P._J._Abdul_Kalam"
+	},
+	{
+	  "type": "uri",
+	  "value": "http://dbpedia.org/resource/Pranab_Mukherjee"
+	 },	
+	{
+	  "type": "uri",
+	  "value": "http://dbpedia.org/resource/Pratibha_Patil"
+	 }
+	]
+}

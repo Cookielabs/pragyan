@@ -1,16 +1,123 @@
 {% extends "base.html" %}
 
+{% block head %}
+<link rel='stylesheet' type='text/css' href='/static/style.css'>
+
+<link href='http://fonts.googleapis.com/css?family=Dancing+Script' rel='stylesheet' type='text/css'>
+
+<style>
+#logo {
+    font-family: 'Dancing Script', cursive;
+    font-size: 40px;
+    float: left;
+}
+
+#wrapper
+{
+	width: 100%;
+	display: block;
+}
+
+#askBar
+{
+	display: inline-block;
+	margin: 5px 5px 5px;
+}
+
+.button, .button:visited {
+        background: #222 url(overlay.png) repeat-x;
+        display: inline-block;
+        color: #fff;
+        text-decoration: none;
+        -moz-border-radius: 6px;
+        -webkit-border-radius: 6px;
+        -moz-box-shadow: 0 1px 3px rgba(0,0,0,0.6);
+        -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.6);
+        text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
+        border-bottom: 1px solid rgba(0,0,0,0.25);
+        position: relative;
+        cursor: pointer;
+        font-size: 14px;
+        padding: 6px 15px 6px;
+        background-color: #91bd09;
+}        
+
+.askText
+{
+	
+	width:340px;
+	height:28px;
+}
+
+a.morelink {
+	text-decoration:none;
+        outline: none;
+}
+
+.morecontent span {
+	display: none;
+}
+
+</style> 
+
+ <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
+ <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+<script>
+$(function() {
+	$( "#accordion" ).accordion( {heightStyle: "content", event: "mouseover" } );
+	      });
+
+$(document).ready(function() {
+    var showChar = 250;
+    var ellipsestext = "...";
+    var moretext = "more";
+    var lesstext = "less";
+    $('.more').each(function() {
+        var content = $(this).html();
+ 
+        if(content.length > showChar) {
+ 
+            var c = content.substr(0, showChar);
+            var h = content.substr(showChar-1, content.length - showChar);
+ 
+            var html = c + '<span class="moreellipses">' + ellipsestext+ '&nbsp;</span><span class="morecontent"><span>' + h + '</span>&nbsp;&nbsp;<a href="" class="morelink">' + moretext + '</a></span>';
+ 
+            $(this).html(html);
+        }
+ 
+    });
+ 
+    $(".morelink").click(function(){
+        if($(this).hasClass("less")) {
+            $(this).removeClass("less");
+            $(this).html(moretext);
+        } else {
+            $(this).addClass("less");
+            $(this).html(lesstext);
+        }
+        $(this).parent().prev().toggle();
+        $(this).prev().toggle();
+        return false;
+    });
+});
+</script>
+{% endblock %}
 
 {% block body %}
 <div id="wrapper">
+	<div id="logo">Pragyan</div>
 	<div id="askBar">
-		<form method="post" action="ask">
-			<input type="text" name="question" value="{{ question }}" >
-			<input type="submit" value="Ask">
+		<form method="post" action="/ask/">
+			{% csrf_token %}
+			<input class="askText" type="text" name="question" value="{{ question }}" >
+			<input class="button" type="submit" value="Ask">
 		</form>
 	</div>
-	<div id="answer">
-		{{ answer }}
+</div>
+<div id="answer">
+	<div id="accordion">
+		{{ result|safe }}
 	</div>
 </div>
 {% endblock %}
