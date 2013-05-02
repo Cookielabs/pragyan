@@ -662,7 +662,7 @@ public class Lexicon
 	public List<String> getPermutations(String question) throws Exception
 	{
 		
-		Set<String> permutationList = new LinkedHashSet<String>();
+		Set<String> permutationList = new LinkedHashSet<>();
 
 		question = question.replaceAll("\\s*who\\s*", " ");
 		question = question.replaceAll("\\s*what\\s*", " ");

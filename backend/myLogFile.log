@@ -1,0 +1,193 @@
+May 02, 2013 8:42:08 PM nlpart.Nlpart main
+INFO: Starting...
+
+May 02, 2013 8:42:08 PM nlpart.Nlpart main
+INFO: The question is: alma mater abdul kalam
+
+May 02, 2013 8:42:08 PM nlpart.answerGenerator generateQueries
+INFO: Sanitized question: alma mater abdul kalam
+
+May 02, 2013 8:42:08 PM nlpart.answerGenerator generateQueries
+INFO: Choice of question : 1
+
+May 02, 2013 8:42:08 PM nlpart.Lexicon getPermutations
+INFO: Question after removing the stop words: alma mater abdul kalam
+
+May 02, 2013 8:42:08 PM nlpart.Lexicon getPermutations
+INFO: List of all permutations
+alma
+mater
+abdul
+kalam
+alma mater
+mater abdul
+abdul kalam
+alma mater abdul
+mater abdul kalam
+alma mater abdul kalam
+
+
+May 02, 2013 8:42:13 PM nlpart.Lexicon getLiterals
+INFO: Literals w/o Duplicates are added to Literal List 
+
+May 02, 2013 8:42:14 PM nlpart.Lexicon getLiterals
+INFO: Literals with Levenshtein Score 
+http://dbpedia.org/resource/A._P._J._Abdul_Kalam  permutation:abdul kalam  label:Abdul Kalam  Score=> 0
+http://dbpedia.org/resource/Alma_Hunt  permutation:alma  label:Alma Hunt  Score=> 5
+http://dbpedia.org/resource/Alma_Birk  permutation:alma  label:Alma Birk  Score=> 5
+http://dbpedia.org/resource/Alma_Zack  permutation:alma  label:Alma Zack  Score=> 5
+http://dbpedia.org/resource/Rudy_Mater  permutation:mater  label:Rudy Mater  Score=> 5
+
+
+May 02, 2013 8:42:16 PM nlpart.Lexicon getPredicatesForThese
+INFO: List of predicates :
+URI: http://dbpedia.org/ontology/birthPlace  Label: birth place
+URI: http://dbpedia.org/ontology/birthDate  Label: birth date
+URI: http://dbpedia.org/ontology/wikiPageExternalLink  Label: Link from a Wikipage to an external page
+URI: http://dbpedia.org/property/birthPlace  Label: birth place
+URI: http://dbpedia.org/property/name  Label: Name
+URI: http://dbpedia.org/property/sign  Label: sign
+URI: http://dbpedia.org/property/text  Label: text
+URI: http://dbpedia.org/property/caption  Label: Caption
+URI: http://dbpedia.org/property/dateOfBirth  Label: DATE OF BIRTH
+URI: http://dbpedia.org/property/vicepresident  Label: vicepresident
+URI: http://dbpedia.org/property/termEnd  Label: term end
+URI: http://dbpedia.org/property/predecessor  Label: predecessor
+URI: http://dbpedia.org/ontology/abstract  Label: has abstract
+URI: http://dbpedia.org/ontology/individualisedPnd  Label: individualised PND number
+URI: http://dbpedia.org/property/shortDescription  Label: SHORT DESCRIPTION
+URI: http://dbpedia.org/property/placeOfBirth  Label: PLACE OF BIRTH
+URI: http://dbpedia.org/property/office  Label: office
+URI: http://dbpedia.org/property/religion  Label: religion
+URI: http://dbpedia.org/property/source  Label: source 
+URI: http://dbpedia.org/property/pnd  Label: PND
+URI: http://dbpedia.org/property/lccn  Label: LCCN
+URI: http://dbpedia.org/property/viaf  Label: VIAF
+URI: http://dbpedia.org/ontology/thumbnail  Label: thumbnail
+URI: http://dbpedia.org/property/salign  Label: salign
+URI: http://dbpedia.org/property/quoted  Label: quoted
+URI: http://dbpedia.org/property/primeminister  Label: primeminister
+URI: http://dbpedia.org/property/birthDate  Label: birth date
+URI: http://dbpedia.org/property/width  Label: Width
+URI: http://dbpedia.org/property/align  Label: align
+URI: http://dbpedia.org/property/termStart  Label: term start
+URI: http://dbpedia.org/property/successor  Label: successor
+URI: http://dbpedia.org/property/party  Label: party
+URI: http://dbpedia.org/property/profession  Label: profession
+URI: http://dbpedia.org/property/almaMater  Label: alma mater
+URI: http://dbpedia.org/property/quote  Label: quote
+URI: http://dbpedia.org/ontology/party  Label: party
+URI: http://dbpedia.org/ontology/vicePresident  Label: vice president
+URI: http://dbpedia.org/ontology/activeYearsStartDate  Label: active years start date
+URI: http://dbpedia.org/ontology/successor  Label: successor
+URI: http://dbpedia.org/ontology/orderInOffice  Label: order in office
+URI: http://dbpedia.org/ontology/almaMater  Label: alma mater
+URI: http://dbpedia.org/ontology/profession  Label: profession
+URI: http://dbpedia.org/ontology/religion  Label: religion
+URI: http://dbpedia.org/ontology/activeYearsEndDate  Label: active years end date
+URI: http://dbpedia.org/ontology/primeMinister  Label: prime minister
+URI: http://dbpedia.org/ontology/deathDate  Label: death date
+URI: http://dbpedia.org/property/country  Label: country
+URI: http://dbpedia.org/property/dateOfDeath  Label: DATE OF DEATH
+URI: http://dbpedia.org/property/batting  Label: batting
+URI: http://dbpedia.org/property/bowling  Label: bowling
+URI: http://dbpedia.org/property/columns  Label: columns
+URI: http://dbpedia.org/property/matches  Label: matches
+URI: http://dbpedia.org/property/wickets  Label: wickets
+URI: http://dbpedia.org/property/bowlAvg  Label: bowl avg
+URI: http://dbpedia.org/property/fivefor  Label: fivefor
+URI: http://dbpedia.org/property/testdebutdate  Label: testdebutdate
+URI: http://dbpedia.org/property/testdebutyear  Label: testdebutyear
+URI: http://dbpedia.org/property/lasttestdate  Label: lasttestdate
+URI: http://dbpedia.org/property/lasttestyear  Label: lasttestyear
+URI: http://dbpedia.org/property/runs  Label: runs
+URI: http://dbpedia.org/property/bestBowling  Label: best bowling
+URI: http://dbpedia.org/property/international  Label: international
+URI: http://dbpedia.org/property/column  Label: column
+URI: http://dbpedia.org/property/batAvg  Label: bat avg
+URI: http://dbpedia.org/property/100s/50s  Label: 100s/50s
+URI: http://dbpedia.org/property/topScore  Label: top score
+URI: http://dbpedia.org/property/tenfor  Label: tenfor
+URI: http://dbpedia.org/property/catches/stumpings  Label: catches/stumpings
+URI: http://dbpedia.org/property/deliveries  Label: deliveries
+URI: http://dbpedia.org/property/playername  Label: playername
+URI: http://dbpedia.org/ontology/deathPlace  Label: death place
+URI: http://dbpedia.org/property/deathPlace  Label: death place
+URI: http://dbpedia.org/property/placeOfDeath  Label: PLACE OF DEATH
+URI: http://dbpedia.org/property/nationality  Label: nationality
+URI: http://dbpedia.org/property/honorificPrefix  Label: honorific-prefix
+URI: http://dbpedia.org/property/deathDate  Label: death date
+URI: http://dbpedia.org/property/occupation  Label: occupation
+URI: http://dbpedia.org/property/birthname  Label: birthname
+URI: http://dbpedia.org/ontology/nationality  Label: nationality
+URI: http://dbpedia.org/ontology/occupation  Label: occupation
+URI: http://dbpedia.org/ontology/birthName  Label: birth name
+URI: http://dbpedia.org/property/spouse  Label: spouse
+URI: http://dbpedia.org/property/yearsActive  Label: years active
+URI: http://dbpedia.org/ontology/activeYearsStartYear  Label: active years start year
+URI: http://dbpedia.org/ontology/birthYear  Label: birth year
+URI: http://dbpedia.org/ontology/spouse  Label: spouse
+URI: http://dbpedia.org/ontology/team  Label: team
+URI: http://dbpedia.org/ontology/height  Label: height (μ)
+URI: http://dbpedia.org/ontology/position  Label: position
+URI: http://dbpedia.org/ontology/number  Label: number
+URI: http://dbpedia.org/ontology/Person/height  Label: height (cm)
+
+
+May 02, 2013 8:42:16 PM nlpart.Lexicon scoreThesePredicates
+INFO: List of Predicates that match w/ Permutation: 
+Contains: http://dbpedia.org/property/almaMater   Permutation: alma
+Contains: http://dbpedia.org/ontology/almaMater   Permutation: alma
+
+
+May 02, 2013 8:42:16 PM nlpart.Lexicon getPredicatesForThese
+INFO: List of predicates that matches w/ permutation :
+URI: http://dbpedia.org/property/almaMater  Label: alma mater
+URI: http://dbpedia.org/ontology/almaMater  Label: alma mater
+
+
+May 02, 2013 8:42:16 PM nlpart.answerGenerator buildQueries
+INFO: Predicates are : 
+http://dbpedia.org/property/almaMater
+http://dbpedia.org/ontology/almaMater
+
+
+May 02, 2013 8:42:19 PM nlpart.answerGenerator generateQueries
+INFO: Queries and their result 
+The query is: Select * where {<http://dbpedia.org/resource/A._P._J._Abdul_Kalam> <http://dbpedia.org/property/almaMater> ?x. OPTIONAL { ?x <http://www.w3.org/2000/01/rdf-schema#label> ?label FILTER ( lang(?label) = 'en' )}}
+
+The answer is: http://dbpedia.org/resource/St._Joseph's_College,_Tiruchirappalli
+****************************************************
+
+The answer is: http://dbpedia.org/resource/Madras_Institute_of_Technology
+****************************************************
+
+The query is: Select * where {<http://dbpedia.org/resource/A._P._J._Abdul_Kalam> <http://dbpedia.org/ontology/almaMater> ?x. OPTIONAL { ?x <http://www.w3.org/2000/01/rdf-schema#label> ?label FILTER ( lang(?label) = 'en' )}}
+
+The answer is: http://dbpedia.org/resource/St._Joseph's_College,_Tiruchirappalli
+****************************************************
+
+The answer is: http://dbpedia.org/resource/Madras_Institute_of_Technology
+****************************************************
+
+The query is: Select * where {<http://dbpedia.org/resource/Alma_Hunt> <http://dbpedia.org/property/almaMater> ?x. OPTIONAL { ?x <http://www.w3.org/2000/01/rdf-schema#label> ?label FILTER ( lang(?label) = 'en' )}}
+
+The query is: Select * where {<http://dbpedia.org/resource/Alma_Hunt> <http://dbpedia.org/ontology/almaMater> ?x. OPTIONAL { ?x <http://www.w3.org/2000/01/rdf-schema#label> ?label FILTER ( lang(?label) = 'en' )}}
+
+The query is: Select * where {<http://dbpedia.org/resource/Alma_Birk> <http://dbpedia.org/property/almaMater> ?x. OPTIONAL { ?x <http://www.w3.org/2000/01/rdf-schema#label> ?label FILTER ( lang(?label) = 'en' )}}
+
+The query is: Select * where {<http://dbpedia.org/resource/Alma_Birk> <http://dbpedia.org/ontology/almaMater> ?x. OPTIONAL { ?x <http://www.w3.org/2000/01/rdf-schema#label> ?label FILTER ( lang(?label) = 'en' )}}
+
+The query is: Select * where {<http://dbpedia.org/resource/Alma_Zack> <http://dbpedia.org/property/almaMater> ?x. OPTIONAL { ?x <http://www.w3.org/2000/01/rdf-schema#label> ?label FILTER ( lang(?label) = 'en' )}}
+
+The query is: Select * where {<http://dbpedia.org/resource/Alma_Zack> <http://dbpedia.org/ontology/almaMater> ?x. OPTIONAL { ?x <http://www.w3.org/2000/01/rdf-schema#label> ?label FILTER ( lang(?label) = 'en' )}}
+
+The query is: Select * where {<http://dbpedia.org/resource/Rudy_Mater> <http://dbpedia.org/property/almaMater> ?x. OPTIONAL { ?x <http://www.w3.org/2000/01/rdf-schema#label> ?label FILTER ( lang(?label) = 'en' )}}
+
+The query is: Select * where {<http://dbpedia.org/resource/Rudy_Mater> <http://dbpedia.org/ontology/almaMater> ?x. OPTIONAL { ?x <http://www.w3.org/2000/01/rdf-schema#label> ?label FILTER ( lang(?label) = 'en' )}}
+
+
+
+May 02, 2013 8:42:19 PM nlpart.Nlpart main
+INFO: Total time taken : 11 seconds
+

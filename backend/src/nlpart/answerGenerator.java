@@ -12,6 +12,10 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.RDFNode;
+import java.io.FileWriter;
+import java.io.IOException;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 public class answerGenerator
 {
@@ -23,25 +27,28 @@ public class answerGenerator
 	public int choice;
 	private String tmplog;
 
-	public answerGenerator() {
+	public answerGenerator()
+	{
 		lexicon = new Lexicon();
 	}
 
-	public void generateQueries(String question, int choice) throws Exception {
+	public void generateQueries(String question, int choice) throws Exception
+	{
 
 		this.question = question.toLowerCase();
 		this.choice = choice;
-		
-		
 
 		sanitizeQuery();
-	
+
 		Util.writeToLog(Level.INFO, "Sanitized question: " + parsedQuestion);
 		Util.writeToLog(Level.INFO, "Choice of question : " + choice);
 		LinkedHashSet<String> queries = buildQueries();
 		System.out
 				.println("\n\n\n\n\n********************The answer to the Life, Universe and Everything :***************************** ");
 		tmplog = "";
+		int numberOfAnswersToSend = 5;
+		int i = 0;
+		List<String> answersFinal = new ArrayList<String>();
 		for (String query : queries)
 		{
 
@@ -61,22 +68,63 @@ public class answerGenerator
 						System.out.println("The query is: " + query);
 						System.out.println("\n**************************\n");
 						System.out.println("The answer is : " + ans.toString());
+						if ( i < numberOfAnswersToSend )
+						{
+							answersFinal.add(ans.toString());
+							i++;
+						}
 						System.out.println("\n**************************\n");
 						tmplog += "The answer is: " + ans.toString()
 								+ "\r\n****************************************************\r\n\r\n";
 					}
 				}
+
 			}
 			catch (Exception e)
 			{
 				System.out.println("Houston, we have a problem! " + e.getMessage());
 			}
 		}
+
+		FileWriter file = new FileWriter("output.json");
+		i = 0;
+		JSONArray listOfObj = new JSONArray();
+		JSONObject resultset = new JSONObject();
+		for (String string : answersFinal)
+		{
+			JSONObject obj = new JSONObject();
+			if ( string.startsWith("http://") )
+			{
+				obj.put("type:", "URI");
+			}
+			else
+			{
+				obj.put("type:", "String");
+			}
+			obj.put("value",new String(string));
+			obj.put("rank", i + 1);
+
+			i++;
+			listOfObj.add(obj);
+		}
+		resultset.put("result-set", listOfObj);
+		try
+		{
+			file.write(resultset.toJSONString());
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+
+		}
+		file.flush();
+		file.close();
 		Util.writeToLog(Level.INFO, "Queries and their result \r\n" + tmplog);
 
 	}
 
-	public void sanitizeQuery() {
+	public void sanitizeQuery()
+	{
 		parsedQuestion = question.replace("?", "");
 		parsedQuestion = parsedQuestion.replace(",", "");
 		parsedQuestion = parsedQuestion.replace(";", "");
@@ -88,57 +136,51 @@ public class answerGenerator
 		parsedQuestion = parsedQuestion.replace("  ", " ");
 	}
 
-
-	public LinkedHashSet<String> buildQueries() throws Exception {
-
+	public LinkedHashSet<String> buildQueries() throws Exception
+	{
 
 		List<String> questionAndType = Util.getQuestionType(parsedQuestion);
 		LinkedHashSet<String> queries = new LinkedHashSet<String>();
 
-		
 		List<LexiconLiteral> literalList = lexicon.getLiterals(parsedQuestion, 50, 5, choice);
 		List<LexiconPredicate> predicateList = lexicon.getPredicatesForThese(literalList, parsedQuestion);
-		
-		
-		if(predicateList.isEmpty()){
+
+		if ( predicateList.isEmpty() )
+		{
 			LexiconPredicate tmpPredicate = new LexiconPredicate("http://dbpedia.org/ontology/abstract", "abstract");
 			predicateList.add(tmpPredicate);
 		}
-		
-		tmplog="";
+
+		tmplog = "";
 		for (LexiconPredicate lexPredicate : predicateList)
 		{
 			System.out.println("Predicate is : " + lexPredicate.URI);
-			tmplog+=lexPredicate.URI+"\r\n";
+			tmplog += lexPredicate.URI + "\r\n";
 		}
-		
-		Util.writeToLog(Level.INFO, "Predicates are : \r\n"+tmplog);
-		
+
+		Util.writeToLog(Level.INFO, "Predicates are : \r\n" + tmplog);
+
 		String query = "";
 		for (LexiconLiteral lexiconLiteral : literalList)
 		{
 			for (LexiconPredicate lexiconPredicate : predicateList)
 			{
-				if(lexiconPredicate.URI.contains("abstract"))
+				if ( lexiconPredicate.URI.contains("abstract") )
+				{
+					query = "Select * where {<" + lexiconLiteral.URI + "> <" + lexiconPredicate.URI + "> ?x. "
+
+					+ " FILTER ( lang(?x) = 'en' )}";
+					queries.add(query);
+				}
+				else
 				{
 					query = "Select * where {<"
 							+ lexiconLiteral.URI
 							+ "> <"
 							+ lexiconPredicate.URI
 							+ "> ?x. "
-							
-							+ " FILTER ( lang(?x) = 'en' )}";
-					 queries.add(query);					
-				}
-				else
-				{
-				 query = "Select * where {<"
-						+ lexiconLiteral.URI
-						+ "> <"
-						+ lexiconPredicate.URI
-						+ "> ?x. "			
-						+ "OPTIONAL { ?x <http://www.w3.org/2000/01/rdf-schema#label> ?label FILTER ( lang(?label) = 'en' )}}";
-				 queries.add(query);
+							+ "OPTIONAL { ?x <http://www.w3.org/2000/01/rdf-schema#label> ?label FILTER ( lang(?label) = 'en' )}}";
+					queries.add(query);
 				}
 			}
 		}
