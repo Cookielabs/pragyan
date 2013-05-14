@@ -2,15 +2,15 @@
 	"result-set": [
 	{
 	  "type": "uri",
-	  "value": "http://dbpedia.org/resource/A._P._J._Abdul_Kalam"
+	  "value": "http://dbpedia.org/resource/Chennai"
 	},
 	{
 	  "type": "uri",
-	  "value": "http://dbpedia.org/resource/Pranab_Mukherjee"
+	  "value": "http://dbpedia.org/resource/India"
 	 },	
 	{
 	  "type": "uri",
-	  "value": "http://dbpedia.org/resource/Pratibha_Patil"
+	  "value": "http://dbpedia.org/page/Michelle_Obama"
 	 }
 	]
 }

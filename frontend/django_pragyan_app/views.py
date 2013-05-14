@@ -69,25 +69,25 @@ def askPage(request):
 
 	#Using panorama
 	solution_graph = Graph()
-	logging.info("Downloading resources:")
+	print "Downloading resources:"
 	#TODO: check efficiency
 	for uri in uris:
-		logging.info("Downloading " + uri)
+		print "Downloading " , uri
 		solution_graph.parse( uri )
 	
-	logging.info("RDF Graph:")
+	print "RDF Graph:"
 	for term in solution_graph:
 		logging.debug(term)
 	
-        logging.info("Creating Fresnel Graph")
+        print "Creating Fresnel Graph"
 	f = open('panorama/data/person_foaf.n3')
         fresnel_data = f.read()
         fresnel = Fresnel( fresnel_data )
 
-	logging.info("Making selection")
+	print "Making selection"
         selector = Selector( fresnel , solution_graph)
         selector.select()
-	logging.info("Formatting")
+	print "Formatting"
         formatter = Formatter( selector )
         formatter.format()
         data = ""
